@@ -1,0 +1,855 @@
+[    0.000000] c0 Booting Linux on physical CPU 0
+
+[    0.000000] c0 Linux version 3.4.5-werewolf--RIP_Beth (root@instance-1) (gcc version 4.9 20150123 (prerelease) (GCC) ) #1 SMP PREEMPT Sun Jun 18 13:15:59 UTC 2017
+
+[    0.000000] c0 CPU: ARMv7 Processor [413fc090] revision 0 (ARMv7), cr=10c53c7d
+
+[    0.000000] c0 CPU: PIPT / VIPT nonaliasing data cache, VIPT aliasing instruction cache
+
+[    0.000000] c0 Machine: PXA988
+
+[    0.000000] c0 get_boot_startaddr: fb_address = 0x17000000
+
+[    0.000000] c0 Malformed early option 'disp_start_addr'
+
+[    0.000000] c0 Reserved OBM memory: 0x100000@0x0
+
+[    0.000000] c0 Reserved CP memory: 0x2000000@0x6000000
+
+[    0.000000] c0 ION carveout memory: 0x08000000@0x09000000
+
+[    0.000000] c0 Initialized persistent memory from 08100000-081fffff
+
+[    0.000000] c0 Reserved GC memory: 16MB at 0x2e000000
+
+[    0.000000] c0 Reserving fb memory: addr[0x17000000], size[0x  800000]
+
+[    0.000000] c0 Memory policy: ECC disabled, Data cache writealloc
+
+[    0.000000] c0 Reserving 0MB of memory at 130MB for crashkernel (System RAM: 752MB)
+
+[    0.000000] c0 PERCPU: Embedded 9 pages/cpu @c1c09000 s12864 r8192 d15808 u36864
+
+[    0.000000] c0 Built 1 zonelists in Zone order, mobility grouping on.  Total pages: 249344
+
+[    0.000000] c0 Kernel command line: initrd=0x01100000,1m rw panic_debug uart_dma vmalloc=0x10000000 qhd_lcd=1 crashkernel=4k@0x8200000 ioncarv=112M@0x09000000 reserve_gpu=16M atcmdmode=1 androidboot.emmc_checksum=3 androidboot.serialno=41029a8a4386b000 board_id=0x06 panel_id=0x00000002 disp_start_addr=0x17000000 ddr_mode=1 androidboot.debug_level=0x4f4c cordon=ab0921fe141d442477b2e7a0035f9fd8 version=Sbl(1.0.0) 2014-08-04 23:34:03
+
+[    0.000000] c0 LT02 Board Rev 0.6
+
+[    0.000000] c0 panel_id : 0x00000002
+
+[    0.000000] c0 PID hash table entries: 4096 (order: 2, 16384 bytes)
+
+[    0.000000] c0 Dentry cache hash table entries: 131072 (order: 7, 524288 bytes)
+
+[    0.000000] c0 Inode-cache hash table entries: 65536 (order: 6, 262144 bytes)
+
+[    0.000000] c0 Memory: 95MB 239MB 648MB = 982MB total
+
+[    0.000000] c0 Memory: 835496k/835496k available, 213080k reserved, 278528K highmem
+
+[    0.000000] c0 Virtual kernel memory layout:
+
+[    0.000000] c0     vector  : 0xffff0000 - 0xffff1000   (   4 kB)
+
+[    0.000000] c0     fixmap  : 0xfff00000 - 0xfffe0000   ( 896 kB)
+
+[    0.000000] c0     vmalloc : 0xef800000 - 0xff000000   ( 248 MB)
+
+[    0.000000] c0     lowmem  : 0xc0000000 - 0xef000000   ( 752 MB)
+
+[    0.000000] c0     pkmap   : 0xbfe00000 - 0xc0000000   (   2 MB)
+
+[    0.000000] c0     modules : 0xbf000000 - 0xbfe00000   (  14 MB)
+
+[    0.000000] c0       .text : 0xc0108000 - 0xc088a10c   (7689 kB)
+
+[    0.000000] c0       .init : 0xc088b000 - 0xc08d6240   ( 301 kB)
+
+[    0.000000] c0       .data : 0xc08d8000 - 0xc0916f78   ( 252 kB)
+
+[    0.000000] c0        .bss : 0xc096bc74 - 0xc0a32540   ( 795 kB)
+
+[    0.000000] c0 SLUB: Genslabs=11, HWalign=64, Order=0-0, MinObjects=0, CPUs=2, Nodes=1
+
+[    0.000000] c0 Preemptible hierarchical RCU implementation.
+
+[    0.000000] c0 NR_IRQS:16 nr_irqs:16 16
+
+[    0.000000] c0 sched_clock: 32 bits at 32kHz, resolution 30517ns, wraps every 131071999ms
+
+[    0.000000] c0 Console: colour dummy device 80x30
+
+[    0.000000] c0 console [tty0] enabled
+
+[    0.003845] c0 Calibrating delay loop... 1209.94 BogoMIPS (lpj=4722688)
+
+[    0.031646] c0 pid_max: default: 32768 minimum: 301
+
+[    0.031768] c0 Security Framework initialized
+
+[    0.031829] c0 SELinux:  Initializing.
+
+[    0.031951] c0 Mount-cache hash table entries: 512
+
+[    0.032684] c0 CPU: Testing write buffer coherency: ok
+
+[    0.032897] c0 CPU0: thread -1, cpu 0, socket 0, mpidr 80000000
+
+[    0.033050] c0 Setting up static identity map for 0x6888d8 - 0x688930
+
+[    0.111907] c1 CPU1: Booted secondary processor
+
+[    0.111938] c1 CPU1: thread -1, cpu 1, socket 0, mpidr 80000001
+
+[    0.112182] c0 Brought up 2 CPUs
+
+[    0.112213] c0 SMP: Total of 2 processors activated (2418.89 BogoMIPS).
+
+[    0.116333] c0 PLL2_VCO is already enabled @ 2132000000, Expected @ 2132000000
+
+[    0.116363] c0 PLL2 is already enabled @ 1066000000
+
+[    0.116394] c0 PLL2P is already enabled @ 1066000000
+
+[    0.116394] c0 PLL3_VCO is already enabled @ 1204000000
+
+[    0.116424] c0 PLL3 is already enabled @ 1204000000
+
+[    0.116424] c0 PLL3P is already enabled @ 1204000000
+
+[    0.116455] c0 ************** clk_gc_aclk_tbl  **************
+
+[    0.116485] c0 clk[156000000] src[624000000:1] div[3]
+
+[    0.116485] c0 clk[208000000] src[416000000:0] div[1]
+
+[    0.116516] c0 clk[312000000] src[624000000:1] div[1]
+
+[    0.116516] c0 clk[416000000] src[416000000:0] div[0]
+
+[    0.116546] c0 ************** clk_gc_tbl  **************
+
+[    0.116577] c0 clk[156000000] src[624000000:1] div[3]
+
+[    0.116577] c0 clk[312000000] src[624000000:1] div[1]
+
+[    0.116607] c0 clk[416000000] src[416000000:0] div[0]
+
+[    0.116607] c0 clk[624000000] src[624000000:1] div[0]
+
+[    0.116638] c0 ************** clk_vpu_aclk_tbl  **************
+
+[    0.116668] c0 clk[156000000] src[624000000:1] div[3]
+
+[    0.116668] c0 clk[208000000] src[416000000:0] div[1]
+
+[    0.116699] c0 clk[312000000] src[624000000:1] div[1]
+
+[    0.116699] c0 clk[416000000] src[416000000:0] div[0]
+
+[    0.116729] c0 ************** clk_vpu_tbl  **************
+
+[    0.116760] c0 clk[156000000] src[624000000:1] div[3]
+
+[    0.116760] c0 clk[208000000] src[416000000:0] div[1]
+
+[    0.116790] c0 clk[312000000] src[624000000:1] div[1]
+
+[    0.116790] c0 clk[416000000] src[416000000:0] div[0]
+
+[    0.116821] c0 ************** clk_lcd_ci_isp_axi_tbl  **************
+
+[    0.116821] c0 clk[156000000] src[624000000:1] div[3]
+
+[    0.116851] c0 clk[208000000] src[416000000:0] div[1]
+
+[    0.116851] c0 clk[312000000] src[624000000:1] div[1]
+
+[    0.116973] c0 clk_pll2_vco_setrate pll2 vco is enabled, tgt rate 2132000000
+
+[    0.116973] c0 clk_pll3_vco_setrate pll3 vco is enabled, tgt rate 1420000000
+
+[    0.117004] c0 PLL2 SWCR[668b5228] PLLCR[1bd800]
+
+[    0.117034] c0 PLL3 SWCR[66825008] PLLCR[c1163]
+
+[    0.117095] c0   0x7764c49   0x30938   0x1003e86c
+
+[    0.117126] c0 is_pxa988a0svc = 2
+
+[    0.117126] c0
+
+[    0.117126] c0 	 ***************************
+
+[    0.117156] c0 	 *	ULT: 0003093807764C49  *
+
+[    0.117156] c0 	 ***************************
+
+[    0.117187] c0 	 ULT decoded below
+
+[    0.117187] c0 		alloc_rev[2:0]	= 1
+
+[    0.117187] c0 		fab [ 7: 3]	= 9
+
+[    0.117218] c0 		run [33: 8]	= 489036 (0x7764C)
+
+[    0.117218] c0 		 wafer [38:34]	= 14
+
+[    0.117248] c0 		 x [46:39]	= 18
+
+[    0.117248] c0 		 y [54:47]	= 6
+
+[    0.117248] c0 		parity [55:55]	= 0
+
+[    0.117279] c0    ***************************
+
+[    0.117279] c0    ***************************
+
+[    0.117309] c0 		DRO [77:68]	= 646
+
+[    0.117309] c0 		Profile	= 6
+
+[    0.117309] c0    ***************************
+
+[    0.117340] c0
+
+[    0.117767] c0 dummy:
+
+[    0.118103] c0 NET: Registered protocol family 16
+
+[    0.118164] c0 laufersteppenwolf: vm_millivolts:
+
+[    0.118194] c0 1050
+
+[    0.118194] c0 1200
+
+[    0.118225] c0 1100
+
+[    0.118225] c0 1288
+
+[    0.118621] c0 L310 cache controller enabled
+
+[    0.118652] c0 l2x0: 16 ways, CACHE_ID 0x410000c9, AUX_CTRL 0x32c50000, Cache size: 524288 B
+
+[    0.119598] c0 galcore rt suspend 1
+
+[    0.120574] c0 gpiochip_add: registered GPIOs 0 to 31 on device: gpio-0
+
+[    0.120605] c0 gpiochip_add: registered GPIOs 32 to 63 on device: gpio-1
+
+[    0.120635] c0 gpiochip_add: registered GPIOs 64 to 95 on device: gpio-2
+
+[    0.120635] c0 gpiochip_add: registered GPIOs 96 to 127 on device: gpio-3
+
+[    0.121002] c0 pclk(src:sel,div) l2clk(src,div)	pdclk(src,div)	baclk(src,div)	periphclk(src,div)	 l1_rtc:l2_rtc
+
+[    0.121032] c0 312(624:0,1)	312([pclk],0)	156([l2clk],1)	156([l2clk],1)	39([pclk],1)	0x88888888:0x8444
+
+[    0.121063] c0
+
+[    0.121093] c0 624(624:0,0)	312([pclk],1)	312([l2clk],0)	156([l2clk],1)	78([pclk],1)	0x88888888:0x8444
+
+[    0.121093] c0
+
+[    0.121124] c0 1066(1066:2,0)	533([pclk],1)	533([l2clk],0)	266([l2clk],1)	133([pclk],1)	0x99999999:0x9555
+
+[    0.121154] c0
+
+[    0.121154] c0 1420(1420:1,0)	710([pclk],1)	710([l2clk],0)	355([l2clk],1)	177([pclk],1)	0xaaaaaaaa:0xa555
+
+[    0.121185] c0
+
+[    0.121185] c0 dclk(src:sel,div,tblindex) aclk(src:sel,div)
+
+[    0.121215] c0 156(624:1,1,1)	78(624:1,7)
+
+[    0.121215] c0 312(624:1,0,3)	156(624:1,3)
+
+[    0.121246] c0 533(1066:3,0,5)	266(1066:3,3)
+
+[    0.121246] c0 get_cur_ddr_axi_op ddr clk tsrc:1066 csel:3 parent:pll2p
+
+[    0.121276] c0 get_cur_ddr_axi_op axi clk tsrc:1066 csel:3 parent:pll2p
+
+[    0.121307] c0  DDR boot up @533000000HZ
+
+[    0.121307] c0  AXI boot up @266000000HZ
+
+[    0.121337] c0  CPU boot up @1420000000HZ
+
+[    0.121337] c0 Actual cpufreq table [0]'s freq : 312000
+
+[    0.121368] c0 Actual cpufreq table [1]'s freq : 624000
+
+[    0.121368] c0 Actual cpufreq table [2]'s freq : 1066000
+
+[    0.121398] c0 Actual cpufreq table [3]'s freq : 1420000
+
+[    0.122192] c0 persistent_ram: found existing buffer, size 92584, start 92584
+
+[    0.361419] c0 console [ram-1] enabled
+
+[    0.361846] c0 bt532: initialize pins
+
+[    0.361999] c0 pxa986_lt02_charger_init: lt02 charger init
+
+[    0.362213] c0 mmp-sram asram.0: initialized
+
+[    0.363006] c0 ---camera---call--init_samsung_cam --for init!!!--------
+
+[    0.363311] c0 gp2a system rev is 8
+
+[    0.363891] c0 dump_regs_init()!
+
+[    0.364837] c0 clk[cpu] rate[312000000] volt[1]
+
+[    0.364959] c0 clk[cpu] rate[624000000] volt[1]
+
+[    0.365142] c0 clk[cpu] rate[1066000000] volt[3]
+
+[    0.365234] c0 clk[cpu] rate[1420000000] volt[4]
+
+[    0.365417] c0 clk[ddr] rate[156000000] volt[1]
+
+[    0.365539] c0 clk[ddr] rate[312000000] volt[1]
+
+[    0.365631] c0 clk[ddr] rate[533000000] volt[4]
+
+[    0.365814] c0 clk[GCCLK] rate[156000000] volt[2]
+
+[    0.365905] c0 clk[GCCLK] rate[312000000] volt[2]
+
+[    0.366088] c0 clk[GCCLK] rate[416000000] volt[2]
+
+[    0.366180] c0 clk[GCCLK] rate[624000000] volt[3]
+
+[    0.366302] c0 clk[VPUCLK] rate[156000000] volt[2]
+
+[    0.366485] c0 clk[VPUCLK] rate[208000000] volt[2]
+
+[    0.366577] c0 clk[VPUCLK] rate[312000000] volt[2]
+
+[    0.366760] c0 clk[VPUCLK] rate[416000000] volt[3]
+
+[    0.366851] c0 clk[cpu] rate[312000000] volt[1]
+
+[    0.367034] c0 clk[cpu] rate[624000000] volt[1]
+
+[    0.367126] c0 clk[cpu] rate[1066000000] volt[3]
+
+[    0.367218] c0 clk[cpu] rate[1420000000] volt[4]
+
+[    0.367401] c0 clk[ddr] rate[156000000] volt[1]
+
+[    0.367492] c0 clk[ddr] rate[312000000] volt[1]
+
+[    0.367675] c0 clk[ddr] rate[533000000] volt[4]
+
+[    0.367797] c0 clk[GCCLK] rate[156000000] volt[2]
+
+[    0.367889] c0 clk[GCCLK] rate[312000000] volt[2]
+
+[    0.368072] c0 clk[GCCLK] rate[416000000] volt[2]
+
+[    0.368164] c0 clk[GCCLK] rate[624000000] volt[3]
+
+[    0.368347] c0 clk[VPUCLK] rate[156000000] volt[2]
+
+[    0.368438] c0 clk[VPUCLK] rate[208000000] volt[2]
+
+[    0.368530] c0 clk[VPUCLK] rate[312000000] volt[2]
+
+[    0.368713] c0 clk[VPUCLK] rate[416000000] volt[3]
+
+[    0.368835] c0 clk[cpu] rate[312000000] volt[1]
+
+[    0.368988] c0 clk[cpu] rate[624000000] volt[1]
+
+[    0.369110] c0 clk[cpu] rate[1066000000] volt[3]
+
+[    0.369262] c0 clk[cpu] rate[1420000000] volt[4]
+
+[    0.369384] c0 clk[ddr] rate[156000000] volt[1]
+
+[    0.369476] c0 clk[ddr] rate[312000000] volt[1]
+
+[    0.369659] c0 clk[ddr] rate[533000000] volt[4]
+
+[    0.369750] c0 clk[GCCLK] rate[156000000] volt[2]
+
+[    0.369934] c0 clk[GCCLK] rate[312000000] volt[2]
+
+[    0.370025] c0 clk[GCCLK] rate[416000000] volt[2]
+
+[    0.370147] c0 clk[GCCLK] rate[624000000] volt[3]
+
+[    0.370330] c0 clk[VPUCLK] rate[156000000] volt[2]
+
+[    0.370452] c0 clk[VPUCLK] rate[208000000] volt[2]
+
+[    0.370605] c0 clk[VPUCLK] rate[312000000] volt[2]
+
+[    0.370727] c0 clk[VPUCLK] rate[416000000] volt[3]
+
+[    0.370819] c0 clk[cpu] rate[312000000] volt[1]
+
+[    0.371002] c0 clk[cpu] rate[624000000] volt[1]
+
+[    0.371093] c0 clk[cpu] rate[1066000000] volt[1]
+
+[    0.371276] c0 clk[cpu] rate[1420000000] volt[1]
+
+[    0.371368] c0 clk[ddr] rate[156000000] volt[1]
+
+[    0.371459] c0 clk[ddr] rate[312000000] volt[1]
+
+[    0.371643] c0 clk[ddr] rate[533000000] volt[1]
+
+[    0.371734] c0 clk[GCCLK] rate[156000000] volt[1]
+
+[    0.371917] c0 clk[GCCLK] rate[312000000] volt[1]
+
+[    0.372039] c0 clk[GCCLK] rate[416000000] volt[1]
+
+[    0.372131] c0 clk[GCCLK] rate[624000000] volt[1]
+
+[    0.372222] c0 clk[VPUCLK] rate[156000000] volt[1]
+
+[    0.372344] c0 clk[VPUCLK] rate[208000000] volt[1]
+
+[    0.372497] c0 clk[VPUCLK] rate[312000000] volt[1]
+
+[    0.372619] c0 clk[VPUCLK] rate[416000000] volt[1]
+
+[    0.376312] c0 bio: create slab <bio-0> at 0
+
+[    0.376953] c0 SCSI subsystem initialized
+
+[    0.377349] c0 i2c-gpio i2c-gpio.7: using pins 50 (SDA) and 49 (SCL)
+
+[    0.377655] c0 i2c-gpio i2c-gpio.6: using pins 52 (SDA) and 51 (SCL)
+
+[    0.377838] c0 i2c-gpio i2c-gpio.8: using pins 20 (SDA) and 19 (SCL)
+
+[    0.378234] c0 i2c-gpio i2c-gpio.5: using pins 36 (SDA) and 35 (SCL)
+
+[    0.378570] c0 i2c-gpio i2c-gpio.10: using pins 54 (SDA) and 53 (SCL)
+
+[    0.378936] c0 I2C: i2c-0: PXA I2C adapter
+
+[    0.379486] c0 I2C: i2c-1: PXA I2C adapter
+
+[    0.380310] c0 88PM800 2-0030: 88PM80x:Marvell 88PM800 (ID:0x64) detected
+
+[    0.380554] c0 device_800_init read register PM800_USER_DATA3 [128]
+
+[    0.381927] c0 88PM800 2-0030: pm800 device_gpadc_init: Done
+
+[    1.696624] c0 BUCK1: 600 <--> 1800 mV at 1287 mV at 3000 mA
+
+[    1.697326] c0 BUCK2: 600 <--> 3300 mV at 1800 mV at 1200 mA
+
+[    1.698120] c0 BUCK3: 600 <--> 3300 mV at 1250 mV at 1200 mA
+
+[    1.698791] c0 BUCK4: 600 <--> 3300 mV at 1850 mV at 1200 mA
+
+[    1.699432] c0 BUCK5: 600 <--> 3300 mV at 1250 mV at 1200 mA
+
+[    1.699981] c0 LDO1: 600 <--> 1500 mV at 1100 mV at 200 mA
+
+[    1.700836] c0 LDO2: 1700 <--> 2800 mV at 2000 mV at 10 mA
+
+[    1.701507] c0 LDO3: 1200 <--> 3300 mV at 3000 mV at 300 mA
+
+[    1.702117] c0 LDO4: 1200 <--> 3300 mV at 2800 mV at 300 mA
+
+[    1.702819] c0 LDO5: 1200 <--> 3300 mV at 3300 mV at 300 mA
+
+[    1.703430] c0 LDO6: 1200 <--> 3300 mV at 2800 mV at 300 mA
+
+[    1.704132] c0 LDO7: 1200 <--> 3300 mV at 2800 mV at 300 mA
+
+[    1.704772] c0 LDO8: 1800 <--> 3300 mV at 2800 mV at 300 mA
+
+[    1.705322] c0 LDO9: 1200 <--> 3300 mV at 3300 mV at 300 mA
+
+[    1.705963] c0 LDO10: 1200 <--> 3300 mV at 2850 mV at 300 mA
+
+[    1.706512] c0 LDO11: 1200 <--> 3300 mV at 1850 mV at 300 mA
+
+[    1.707153] c0 LDO12: 1200 <--> 3300 mV at 3000 mV at 300 mA
+
+[    1.707702] c0 LDO13: 1200 <--> 3300 mV at 3000 mV at 300 mA
+
+[    1.708435] c0 LDO14: 1200 <--> 3300 mV at 3300 mV at 300 mA
+
+[    1.708984] c0 LDO15: 1200 <--> 3300 mV at 3300 mV at 300 mA
+
+[    1.709747] c0 LDO16: 1200 <--> 3300 mV at 1250 mV at 300 mA
+
+[    1.710418] c0 LDO17: 1200 <--> 3300 mV at 1800 mV at 300 mA
+
+[    1.711151] c0 LDO18: 1700 <--> 3300 mV at 1800 mV at 200 mA
+
+[    1.711853] c0 LDO19: 1700 <--> 3300 mV at 1800 mV at 200 mA
+
+[    1.712615] c0 BUCK1_AP_ACTIVE: 1 <--> 10 mV at 300 mA
+
+[    1.713287] c0 BUCK1_AP_LPM: 1 <--> 10 mV at 300 mA
+
+[    1.714050] c0 BUCK1_APSUB_IDLE: 1 <--> 10 mV at 300 mA
+
+[    1.714752] c0 BUCK1_APSUB_SLEEP: 1 <--> 10 mV at 300 mA
+
+[    1.715057] c0 88PM800 2-0030: [device_regulator_init]:Added mfd regulator_devs
+
+[    1.715301] c0 88PM800 2-0030: [device_800_init]:Added mfd onkey_devs
+
+[    1.715515] c0 88PM800 2-0030: [device_800_init]:Added mfd bat_devs
+
+[    1.715698] c0 88PM800 2-0030: [device_800_init]:Added mfd rtc_devs
+
+[    1.715911] c0 88PM800 2-0030: [device_800_init]:Added mfd headset_devs
+
+[    1.716064] c0 88PM800 2-0030: [device_800_init]:Added mfd dvc_devs
+
+[    1.716339] c0 88PM800 2-0030: [device_800_init]:Added mfd usb_devs
+
+[    1.716552] c0 [0xd0: 0x80] [0xd1: 0xcc] [0xd2: 0x1e] [0xd3: 0xf8] [0xd4: 0x 0] [0xd5: 0x 0] [0xd6: 0x 0] [0xd7: 0x 0]
+
+[    1.718536] c0 [0xd8: 0x 0] [0xd9: 0x 0] [0xda: 0x 0] [0xdb: 0x 0] [0xdc: 0x 0] [0xdd: 0x 0] [0xde: 0x 0] [0xdf: 0x 0]
+
+[    1.720520] c0 [0xe0: 0x 0] [0xe1: 0xb0] [0xe2: 0x2a] [0xe3: 0x70] [0xe4: 0xcd] [0xe5: 0x 0] [0xe6: 0x 0] [0xe7: 0x 1]
+
+[    1.722473] c0 [0xe8: 0x 0] [0xe9: 0xff] [0xea: 0x40] [0xeb: 0x39] [0xec: 0xfd] [0xed: 0x4f] [0xee: 0x58] [0xef: 0x 2]
+
+[    1.728149] c0 PowerDW Log1 0xe5: 0x0
+
+[    1.728454] c0 PowerDW Log2 0xe6: 0x0
+
+[    1.729187] c0 bt532: TSP VENDOR 1
+
+[    2.151367] c0 88PM805 2-0038: [device_805_init]:Added mfd codec_devs
+
+[    2.543487] c0 I2C: i2c-2: PXA I2C adapter
+
+[    2.543670] c0 Linux media interface: v0.10
+
+[    2.543884] c0 Linux video capture interface: v2.00
+
+[    2.544158] c0 Advanced Linux Sound Architecture Driver Version 1.0.25.
+
+[    2.544677] c0 Bluetooth: Core ver 2.16
+
+[    2.544830] c0 NET: Registered protocol family 31
+
+[    2.544921] c0 Bluetooth: HCI device and connection manager initialized
+
+[    2.545104] c0 Bluetooth: HCI socket layer initialized
+
+[    2.545227] c0 Bluetooth: L2CAP socket layer initialized
+
+[    2.545410] c0 Bluetooth: SCO socket layer initialized
+
+[    2.545745] c0 cfg80211: Calling CRDA to update world regulatory domain
+
+[    2.545959] c0 cfg80211: World regulatory domain updated:
+
+[    2.546081] c0 cfg80211:   (start_freq - end_freq @ bandwidth), (max_antenna_gain, max_eirp)
+
+[    2.546264] c0 cfg80211:   (2402000 KHz - 2472000 KHz @ 40000 KHz), (300 mBi, 2000 mBm)
+
+[    2.546447] c0 cfg80211:   (2457000 KHz - 2482000 KHz @ 20000 KHz), (300 mBi, 2000 mBm)
+
+[    2.546630] c0 cfg80211:   (2474000 KHz - 2494000 KHz @ 20000 KHz), (300 mBi, 2000 mBm)
+
+[    2.546752] c0 cfg80211:   (5170000 KHz - 5250000 KHz @ 40000 KHz), (300 mBi, 2000 mBm)
+
+[    2.546936] c0 cfg80211:   (5735000 KHz - 5835000 KHz @ 40000 KHz), (300 mBi, 2000 mBm)
+
+[    2.556427] c0 Switching to clocksource clocksource
+
+[    2.572753] c0 Unable to handle kernel NULL pointer dereference at virtual address 00000001
+
+[    2.572967] c0 pgd = c0104000
+
+[    2.573059] c0 [00000001] *pgd=00000000
+
+[    2.573242] c0 Internal error: Oops: 5 [#1] PREEMPT SMP ARM
+
+[    2.573425] c0 Modules linked in:
+
+[    2.573608] c0 CPU: 0    Not tainted  (3.4.5-werewolf--RIP_Beth #1)
+
+[    2.573791] c0 PC is at kmem_cache_alloc_trace+0x64/0x1a0
+
+[    2.573913] c0 LR is at con_insert_unipair+0xa8/0xf8
+
+[    2.574096] c0 pc : [<c01f3cdc>]    lr : [<c03bbc00>]    psr: 20000013
+
+[    2.574096] c0 sp : ed831ed0  ip : c1c0e2a0  fp : 00000001
+
+[    2.574371] c0 r10: 00000ba6  r9 : c08e9b2a  r8 : 00000080
+
+[    2.574462] c0 r7 : c03bbc00  r6 : 000000d0  r5 : ed802200  r4 : 00000001
+
+[    2.574645] c0 r3 : 00000000  r2 : c08e1848  r1 : ed830000  r0 : 01336000
+
+[    2.574768] c0 Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment kernel
+
+[    2.574951] c0 Control: 10c53c7d  Table: 0010404a  DAC: 00000015
+
+[    2.575134] c0
+
+[    2.575134] c0 PC: 0xc01f3c5c:
+
+[    2.575317] c0 3c5c  0a000000 eb124ed6 e1a00005 e28dd00c e8bd8ff0 004958fc 00496878 e92d4ff7
+
+[    2.576293] c0 3c7c  e1a08002 e59f2188 e1a0300d e1a06001 e3c31d7f e1a0700e e1a05000 e79f2002
+
+[    2.577270] c0 3c9c  e3c1103f e5910014 e5953000 e7920100 e083c000 e59ca004 e7934000 e3540000
+
+[    2.578155] c0 3cbc  1a000005 e1a00005 e1a01006 e1a02007 ebfffe4d e1a04000 ea00001d e5953014
+
+[    2.579132] c0 3cdc  e794e003 e10f9000 f10c0080 e591c014 e5953000 e792c10c e1a00003 e790b00c
+
+[    2.580108] c0 3cfc  e15b0004 1a00000c e2833004 e793300c e153000a 1a000008 e780e00c e2833002
+
+[    2.581085] c0 3d1c  e591c014 e5950000 e792c10c e2800004 e780300c e3a03001 ea000000 e3a03000
+
+[    2.581970] c0 3d3c  e121f009 e3530000 0affffd5 e5953014 f7def003 e7e037d6 e3540000 03a03000
+
+[    2.582946] c0
+
+[    2.582946] c0 LR: 0xc03bbb80:
+
+[    2.583160] c0 bb80  e593001c e3500000 03a00010 0a000002 e3a010d0 e3a02080 ebf8e036 e3500000
+
+[    2.584136] c0 bba0  e7850107 12403004 1280207c 13a01000 1a000001 e3e0000b e8bd80f8 e5a31004
+
+[    2.585113] c0 bbc0  e1530002 1afffffc e7e43354 e0807103 e7903103 e3530000 1a000011 e59f3068
+
+[    2.586090] c0 bbe0  e79f3003 e593001c e3500000 03a03010 0a000003 e3a010d0 e3a02080 ebf8e01d
+
+[    2.586975] c0 bc00  e1a03000 e3530000 e5873000 0affffe8 e1a00003 e3a010ff e3a02080 ebfed027
+
+[    2.587951] c0 bc20  e1a03000 e204203f e0844a06 e1a02082 e3a00000 e18360b2 e5953084 e0834004
+
+[    2.588928] c0 bc40  e5854084 e8bd80f8 002cde44 002cdde0 e92d4ff7 e1a09000 e1a07001 e3a08000
+
+[    2.589904] c0 bc60  e3a0a014 e1a00008 eb000d7b e3500000 0a000037 e59f30f0 e002089a e79f3003
+
+[    2.590789] c0
+
+[    2.590789] c0 SP: 0xed831e50:
+
+[    2.591064] c0 1e50  00000000 ed99ae00 00000000 ed99ae08 ed99ae08 00000000 c1c0bc50 00000000
+
+[    2.592010] c0 1e70  ed830000 c01f3cdc 20000013 ffffffff ed831ebc c0112a98 01336000 ed830000
+
+[    2.592926] c0 1e90  c08e1848 00000000 00000001 ed802200 000000d0 c03bbc00 00000080 c08e9b2a
+
+[    2.593902] c0 1eb0  00000ba6 00000001 c1c0e2a0 ed831ed0 c03bbc00 c01f3cdc 20000013 ffffffff
+
+[    2.594879] c0 1ed0  ed802200 000000d0 00000080 00002665 ed91dc00 00000003 ed994be4 00000003
+
+[    2.595855] c0 1ef0  c08e9b2a c08e9d84 00000001 c03bbc00 c08e9b2c 00000000 00000000 ed803000
+
+[    2.596740] c0 1f10  ed91dc00 c03bc7c0 00000003 c08e9b2c 00000000 00000000 00000014 c09fe330
+
+[    2.597747] c0 1f30  c0956744 00000000 c08bcff0 c096bc80 c088b2bc c08aa338 00000007 00000000
+
+[    2.598724] c0
+
+[    2.598724] c0 IP: 0xc1c0e220:
+
+[    2.598907] c0 e220  00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+
+[    2.599884] c0 e240  ed801a40 00000050 c19b0020 00000000 00000000 00000000 ed802580 00000016
+
+[    2.600769] c0 e260  c19b0040 00000000 00000000 00000000 ed91dcc0 00000334 c19b23a0 00000000
+
+[    2.601745] c0 e280  00000000 00000000 ed99c480 00005ef0 c19b3380 00000000 00000000 00000000
+
+[    2.602630] c0 e2a0  00000001 00000ba6 c19b3280 00000000 00000000 00000000 ed921a00 00000088
+
+[    2.603607] c0 e2c0  c19b2420 00000000 00000000 00000000 00000000 00000164 c19b3340 00000000
+
+[    2.604492] c0 e2e0  00000000 00000000 ed925c00 00000088 c19b24a0 00000000 00000000 00000000
+
+[    2.605468] c0 e300  00000000 0000000c c19b1b60 00000000 00000000 00000000 ed819000 0000074e
+
+[    2.606353] c0
+
+[    2.606384] c0 R1: 0xed82ff80:
+
+[    2.606628] c0 ff80  00000001 00000000 ed82fe80 c07e104b ed82fed1 ed82ffd0 ed82ff10 00000000
+
+[    2.607513] c0 ffa0  00000000 515701fa c092e530 00000000 00000000 81240002 00000011 00000000
+
+[    2.608489] c0 ffc0  00000001 00000000 ed82fe80 c07e1010 ed82ff90 00000000 00000000 00000000
+
+[    2.609466] c0 ffe0  00000000 61207062 c092e500 00000000 00000000 81a40002 00000012 00000000
+
+[    2.610443] c0 0000  00000000 00000002 00000000 ed81e000 c091f960 00000000 00000015 c1c0bc00
+
+[    2.611328] c0 0020  ed81e000 c01081c0 ed830000 c0943acc ed81e700 00000000 ed831d74 ed831d30
+
+[    2.612304] c0 0040  c06872d0 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+
+[    2.613281] c0 0060  00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+
+[    2.614257] c0
+
+[    2.614257] c0 R2: 0xc08e17c8:
+
+[    2.614440] c0 17c8  c08e17c8 c08e17c8 00000000 00000000 00000000 00000000 00000000 00000000
+
+[    2.615417] c0 17e8  00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+
+[    2.616394] c0 1808  00000000 00000000 00000080 00000002 00000009 c1c1b080 00009000 0000000f
+
+[    2.617309] c0 1828  c1c1b100 0000002c c1c1b000 c1c1b040 00000001 00001000 00000000 00000001
+
+[    2.618286] c0 1848  01336000 0133f000 c1c1b0c0 c1c09000 00011000 0003ffff 0002dffa 00000001
+
+[    2.619232] c0 1868  0000fffa 00000032 00000000 00000001 ed802100 00000003 ed91d9d0 00000000
+
+[    2.620208] c0 1888  00000011 c1c1f200 0001ffff ed804580 ed802480 00000014 00000010 0000ffff
+
+[    2.621093] c0 18a8  ed804600 c1c9f200 00100000 ed811000 ed802100 00000003 ed8cdd40 00000001
+
+[    2.622070] c0
+
+[    2.622100] c0 R5: 0xed802180:
+
+[    2.622344] c0 2180  c08d8288 00000000 00000005 00000040 00000040 00000000 0000001e 00000040
+
+[    2.623260] c0 21a0  00000040 00000040 00000000 00000005 00000000 00000040 00000040 00000000
+
+[    2.624206] c0 21c0  ed800040 ed802144 ed802244 00000000 00000000 00000000 00000000 00000000
+
+[    2.625183] c0 21e0  00000000 00000000 00000000 00000000 ed8010c0 e9d71fdc 6a47fd96 7f6627f4
+
+[    2.626159] c0 2200  c08d82a0 00000000 00000005 00000080 00000080 00000000 0000001e 00000020
+
+[    2.627075] c0 2220  00000020 00000020 00000000 00000006 00000000 00000080 00000040 00000000
+
+[    2.628051] c0 2240  ed800080 ed8021c4 ed8022c4 00000000 00000000 00000000 00000000 00000000
+
+[    2.629028] c0 2260  00000000 00000000 00000000 00000000 ed801100 3cbd96fe 6f6487f9 ffccb78f
+
+[    2.630004] c0
+
+[    2.630004] c0 R7: 0xc03bbb80:
+
+[    2.630187] c0 bb80  e593001c e3500000 03a00010 0a000002 e3a010d0 e3a02080 ebf8e036 e3500000
+
+[    2.631164] c0 bba0  e7850107 12403004 1280207c 13a01000 1a000001 e3e0000b e8bd80f8 e5a31004
+
+[    2.632080] c0 bbc0  e1530002 1afffffc e7e43354 e0807103 e7903103 e3530000 1a000011 e59f3068
+
+[    2.633056] c0 bbe0  e79f3003 e593001c e3500000 03a03010 0a000003 e3a010d0 e3a02080 ebf8e01d
+
+[    2.634033] c0 bc00  e1a03000 e3530000 e5873000 0affffe8 e1a00003 e3a010ff e3a02080 ebfed027
+
+[    2.635009] c0 bc20  e1a03000 e204203f e0844a06 e1a02082 e3a00000 e18360b2 e5953084 e0834004
+
+[    2.635894] c0 bc40  e5854084 e8bd80f8 002cde44 002cdde0 e92d4ff7 e1a09000 e1a07001 e3a08000
+
+[    2.636840] c0 bc60  e3a0a014 e1a00008 eb000d7b e3500000 0a000037 e59f30f0 e002089a e79f3003
+
+[    2.637817] c0
+
+[    2.637817] c0 R9: 0xc08e9aaa:
+
+[    2.638000] c0 9aa8  f0c3f0c2 f0c5f0c4 f0c7f0c6 f0c9f0c8 f0cbf0ca f0cdf0cc f0cff0ce f0d1f0d0
+
+[    2.638977] c0 9ac8  f0d3f0d2 f0d5f0d4 f0d7f0d6 f0d9f0d8 f0dbf0da f0ddf0dc f0dff0de f0e1f0e0
+
+[    2.639892] c0 9ae8  f0e3f0e2 f0e5f0e4 f0e7f0e6 f0e9f0e8 f0ebf0ea f0edf0ec f0eff0ee f0f1f0f0
+
+[    2.640869] c0 9b08  f0f3f0f2 f0f5f0f4 f0f7f0f6 f0f9f0f8 f0fbf0fa f0fdf0fc f0fff0fe 263a0000
+
+[    2.641754] c0 9b28  2665263b 25c62666 26602663 25d82022 25d925cb 26402642 266b266a 00a4263c
+
+[    2.642730] c0 9b48  25ba25b6 25c425c0 203c2195 00a700b6 21a825ac 21932191 21902192 2194221f
+
+[    2.643615] c0 9b68  25bc25b2 00210020 00a80022 00240023 00260025 00b40027 00290028 002b002a
+
+[    2.644592] c0 9b88  00b8002c 00ad002d 002f002e 00310030 00330032 00350034 00370036 00390038
+
+[    2.645477] c0 9ba8  003b003a 003d003c 003f003e 00410040 00c100c0 00c300c2 00430042 004400a9
+
+[    2.646453] c0 Process swapper/0 (pid: 1, stack limit = 0xed8302f8)
+
+[    2.646636] c0 Stack: (0xed831ed0 to 0xed832000)
+
+[    2.646759] c0 1ec0:                                     ed802200 000000d0 00000080 00002665
+
+[    2.646942] c0 1ee0: ed91dc00 00000003 ed994be4 00000003 c08e9b2a c08e9d84 00000001 c03bbc00
+
+[    2.647125] c0 1f00: c08e9b2c 00000000 00000000 ed803000 ed91dc00 c03bc7c0 00000003 c08e9b2c
+
+[    2.647247] c0 1f20: 00000000 00000000 00000014 c09fe330 c0956744 00000000 c08bcff0 c096bc80
+
+[    2.647430] c0 1f40: c088b2bc c08aa338 00000007 00000000 c01081c0 c08aa8e0 c07df3d8 00000000
+
+[    2.647613] c0 1f60: 00000001 c08e92a4 c09fdaec c09fdb74 00000000 c08a9da8 c07a20a1 00000000
+
+[    2.647796] c0 1f80: 00000000 c01081c0 c096bcd4 c08aaad0 ed830018 c01085fc c090ab58 c07af148
+
+[    2.647918] c0 1fa0: c07af12a 000000c5 ed831fc4 c01081c0 00000005 000000c6 c08bd41c c085e118
+
+[    2.648101] c0 1fc0: c08bcff0 c096bc80 c088b2bc c088ba58 00000005 00000005 c088b2bc 00000000
+
+[    2.648284] c0 1fe0: 00000000 c08d2678 c01140f0 00000013 00000000 c01140f0 033773f7 3ac79137
+
+[    2.648468] c0 [<c01f3cdc>] (kmem_cache_alloc_trace+0x64/0x1a0) from [<c03bbc00>] (con_insert_unipair+0xa8/0xf8)
+
+[    2.648590] c0 [<c03bbc00>] (con_insert_unipair+0xa8/0xf8) from [<c03bc7c0>] (con_set_default_unimap+0xd4/0x174)
+
+[    2.648803] c0 [<c03bc7c0>] (con_set_default_unimap+0xd4/0x174) from [<c08aa338>] (console_map_init+0x40/0x54)
+
+[    2.648986] c0 [<c08aa338>] (console_map_init+0x40/0x54) from [<c08aa8e0>] (vty_init+0x1a4/0x1ec)
+
+[    2.649200] c0 [<c08aa8e0>] (vty_init+0x1a4/0x1ec) from [<c08a9da8>] (tty_init+0x140/0x180)
+
+[    2.649383] c0 [<c08a9da8>] (tty_init+0x140/0x180) from [<c01085fc>] (do_one_initcall+0xa0/0x19c)
+
+[    2.649566] c0 [<c01085fc>] (do_one_initcall+0xa0/0x19c) from [<c088ba58>] (kernel_init+0x158/0x238)
+
+[    2.649688] c0 [<c088ba58>] (kernel_init+0x158/0x238) from [<c01140f0>] (kernel_thread_exit+0x0/0x8)
+
+[    2.649871] c0 Code: ebfffe4d e1a04000 ea00001d e5953014 (e794e003)
+
+[    2.650054] c0 Pending interrupt status(0): 0x20000000
+
+[    2.650177] c0 Pending interrupt status(1): 0x0
+
+[    2.650329] c0 Pending interrupt status(2): 0x0
+
+[    2.650451] c0 Pending interrupt status(3): 0x0
+
+[    2.650543] c0 EMMD: ready to flush cache
+
+[    2.650726] c1 CPU 1 will stop doing anything useful since another CPU has crashed
+
+[    2.650848] c1 Unable to handle kernel paging request at virtual address 0133f000
+
+[    2.651031] c1 pgd = c0104000
+
+[    2.651123] c1 [0133f000] *pgd=00000000
+
+[    3.654235] c0 Non-crashing CPUs did not react to IPI
+
+[    3.654327] c0 Unable to handle kernel paging request at virtual address 01336000
+
+[    3.654510] c0 pgd = c0104000
+
+[    3.654602] c0 [01336000] *pgd=00000000
+
+
+
+No errors detected

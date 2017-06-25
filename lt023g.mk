@@ -15,6 +15,10 @@ PRODUCT_AAPT_CONFIG := large mdpi hdpi xhdpi
 PRODUCT_AAPT_PREF_CONFIG := mdpi
 PRODUCT_LOCALES += mdpi
 
+# API (for CTS backward compatibility)
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.product.first_api_level=19
+
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
 
@@ -151,17 +155,12 @@ PRODUCT_PACKAGES += \
     wpa_supplicant \
     wpa_supplicant.conf
 
-
-#
-# Set wifi-only before it's set by generic_no_telephony.mk
 $(call inherit-product, build/target/product/full_base.mk)
 
-$(call inherit-product, frameworks/native/build/tablet-7in-hdpi-1024-dalvik-heap.mk)
+$(call inherit-product-if-exists, frameworks/native/build/tablet-7in-hdpi-1024-dalvik-heap.mk)
 $(call inherit-product-if-exists, vendor/marvell/generic/sd8787/FwImage/sd8787fw.mk)
 $(call inherit-product-if-exists, vendor/marvell/generic/sd8787/sd8787.mk)
 $(call inherit-product-if-exists, vendor/marvell/generic/sd8787/sd8787_modules.mk)
-
-
 
 
 #hack for prebult kernel
@@ -171,4 +170,4 @@ else
 	LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
 endif
 PRODUCT_COPY_FILES += \
-    $(LOCAL_KERNEL):kernel
+    $(LOCAL_KERNEL):prebuilt/kernel

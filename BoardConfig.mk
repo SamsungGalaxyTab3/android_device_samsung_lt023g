@@ -15,7 +15,6 @@
 LOCAL_PATH := device/samsung/lt023g
 
 #Target info
-USE_CAMERA_STUB := true
 BOARD_HAS_NO_SELECT_BUTTON := true
 
 # MRVL hardware
@@ -50,13 +49,13 @@ NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
 
 # Kernel
 TARGET_KERNEL_SOURCE := kernel/samsung/lt02
-TARGET_KERNEL_CONFIG := pxa986_lt023g_werewolf_defconfig
+TARGET_KERNEL_CONFIG := lt023g_defconfig
 BOARD_KERNEL_CMDLINE := androidboot.selinux=permissive
 BOARD_KERNEL_BASE := 0x10000000
 BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x01000000
 BOARD_KERNEL_PAGESIZE := 2048
 ##prebuilt kernel in case of no source
-TARGET_PREBUILT_KERNEL := $(LOCAL_PATH)/kernel
+TARGET_PREBUILT_KERNEL := $(LOCAL_PATH)/prebuilt/kernel
 
 # Partitions
 TARGET_USERIMAGES_USE_EXT4 := true
@@ -89,8 +88,11 @@ BOARD_HAVE_BLUETOOTH_MRVL := true
 MRVL_WIRELESS_DAEMON_API := true
 USE_BLUETOOTH_SAP := false
 
+# Camera
+USE_CAMERA_STUB := true
+TARGET_HAS_LEGACY_CAMERA_HAL1 := true
 
-#WiFi
+# WiFi
 BOARD_HAVE_MARVELL_WIFI := true
 BOARD_WPA_SUPPLICANT_DRIVER := NL80211
 WPA_SUPPLICANT_VERSION := VER_0_8_X

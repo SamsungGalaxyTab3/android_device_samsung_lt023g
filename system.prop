@@ -18,3 +18,6 @@ ro.tel.config.path=/system/etc/tel/
 
 # adaptive backlight
 ro.cm.hardware.cabc=/sys/class/mdnie/mdnie/cabc
+
+# Wifi
+wifi.interface=wlan0

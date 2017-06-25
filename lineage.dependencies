@@ -1,0 +1,14 @@
+[
+  {
+    "repository": "SamsungGalaxyTab3/android_device_samsung_lt023g",
+    "target_path": "device/samsung/lt023g"
+  },
+  {
+    "repository": "SamsungGalaxyTab3/android_vendor_samsung_lt023g",
+    "target_path": "vendor/samsung/lt023g"
+  },
+  {
+    "repository": "SamsungGalaxyTab3/android_kernel_samsung_lt023g",
+    "target_path": "kernel/samsung/lt023g"
+  }
+]
