@@ -8,8 +8,8 @@
     "target_path": "vendor/samsung/lt023g"
   },
   {
-    "repository": "SamsungGalaxyTab3/android_kernel_samsung_lt023g",
-    "target_path": "kernel/samsung/lt023g"
+    "repository": "SamsungGalaxyTab3/android_kernel_samsung_lt02",
+    "target_path": "kernel/samsung/lt02"
   },
   {
     "repository": "SamsungGalaxyTab3/android_vendor_marvell_external",
