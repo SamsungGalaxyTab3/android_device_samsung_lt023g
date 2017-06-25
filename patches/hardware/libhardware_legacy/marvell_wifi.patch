@@ -1,820 +1,3 @@
-diff --git a/Android.mk b/Android.mk
-index 82868a1..4e01ed8 100644
---- a/Android.mk
-+++ b/Android.mk
-@@ -31,6 +31,13 @@ LOCAL_C_INCLUDES += external/libnl-headers
- endif
- endif
- 
-+ifdef USES_TI_MAC80211
-+LOCAL_STATIC_LIBRARIES := libnl_2
-+LOCAL_C_INCLUDES += external/libnl-headers
-+#LOCAL_C_INCLUDES += hardware/ti/wlan/mac80211/wpa_supplicant_lib
-+endif
-+
-+LOCAL_CFLAGS  += -DQEMU_HARDWARE
- QEMU_HARDWARE := true
- 
- LOCAL_SHARED_LIBRARIES += libdl
-diff --git a/audio/Android.mk b/audio/Android.mk
-index b3040d7..79a1d74 100644
---- a/audio/Android.mk
-+++ b/audio/Android.mk
-@@ -29,6 +29,36 @@ ifeq ($(AUDIO_POLICY_TEST),true)
-   LOCAL_CFLAGS += -DAUDIO_POLICY_TEST
- endif
- 
-+ifeq ($(BOARD_USES_QCOM_HARDWARE),true)
-+
-+ifneq ($(strip $(AUDIO_FEATURE_DISABLED_FM)),true)
-+LOCAL_CFLAGS += -DAUDIO_EXTN_FM_ENABLED
-+endif
-+ifneq ($(strip $(AUDIO_FEATURE_DISABLED_SSR)),true)
-+LOCAL_CFLAGS += -DAUDIO_EXTN_SSR_ENABLED
-+endif
-+ifneq ($(strip $(AUDIO_FEATURE_DISABLED_PROXY_DEVICE)),true)
-+LOCAL_CFLAGS += -DAUDIO_EXTN_AFE_PROXY_ENABLED
-+endif
-+ifneq ($(strip $(AUDIO_FEATURE_DISABLED_INCALL_MUSIC)),true)
-+LOCAL_CFLAGS += -DAUDIO_EXTN_INCALL_MUSIC_ENABLED
-+endif
-+ifneq ($(strip $(AUDIO_FEATURE_DISABLED_FORMATS)),true)
-+LOCAL_CFLAGS += -DAUDIO_EXTN_FORMATS_ENABLED
-+endif
-+ifneq ($(strip $(AUDIO_FEATURE_DISABLED_COMPRESS_VOIP)),true)
-+LOCAL_CFLAGS += -DAUDIO_EXTN_COMPRESS_VOIP_ENABLED
-+endif
-+ifneq ($(strip $(AUDIO_FEATURE_DISABLED_DS1_DOLBY_DDP)),true)
-+LOCAL_CFLAGS += -DAUDIO_EXTN_DS1_DOLBY_DDP_ENABLED
-+endif
-+
-+ifeq ($(BOARD_USES_LEGACY_ALSA_AUDIO),true)
-+LOCAL_CFLAGS += -DAUDIO_LEGACY_FORMATS_ENABLED
-+endif
-+
-+endif
-+
- LOCAL_STATIC_LIBRARIES := libmedia_helper
- LOCAL_MODULE := libaudiopolicy_legacy
- LOCAL_CFLAGS += -Wno-unused-parameter
-diff --git a/audio/AudioHardwareInterface.cpp b/audio/AudioHardwareInterface.cpp
-index dbf6f33..b365084 100644
---- a/audio/AudioHardwareInterface.cpp
-+++ b/audio/AudioHardwareInterface.cpp
-@@ -71,10 +71,12 @@ AudioStreamOut::~AudioStreamOut()
- }
- 
- // default implementation is unsupported
-+#ifndef ICS_AUDIO_BLOB
- status_t AudioStreamOut::getNextWriteTimestamp(int64_t *timestamp)
- {
-     return INVALID_OPERATION;
- }
-+#endif
- 
- AudioStreamIn::~AudioStreamIn() {}
- 
-diff --git a/audio/AudioPolicyManagerBase.cpp b/audio/AudioPolicyManagerBase.cpp
-index 74ee22a..ec08e24 100644
---- a/audio/AudioPolicyManagerBase.cpp
-+++ b/audio/AudioPolicyManagerBase.cpp
-@@ -1,5 +1,7 @@
- /*
-  * Copyright (C) 2009 The Android Open Source Project
-+ * Copyright (c) 2013, The Linux Foundation. All rights reserved.
-+ * Not a Contribution.
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-@@ -383,6 +385,15 @@ void AudioPolicyManagerBase::setPhoneState(int state)
-     // change routing is necessary
-     setOutputDevice(mPrimaryOutput, newDevice, force, delayMs);
- 
-+    //update device for all non-primary outputs
-+    for (size_t i = 0; i < mOutputs.size(); i++) {
-+        audio_io_handle_t output = mOutputs.keyAt(i);
-+        if (output != mPrimaryOutput) {
-+            newDevice = getNewDevice(output, false /*fromCache*/);
-+            setOutputDevice(output, newDevice, (newDevice != AUDIO_DEVICE_NONE));
-+        }
-+    }
-+
-     // if entering in call state, handle special case of active streams
-     // pertaining to sonification strategy see handleIncallSonification()
-     if (isStateInCall(state)) {
-@@ -524,7 +535,7 @@ AudioPolicyManagerBase::IOProfile *AudioPolicyManagerBase::getProfileForDirectOu
-             } else {
-                 if (profile->isCompatibleProfile(device, samplingRate, format,
-                                            channelMask,
--                                           AUDIO_OUTPUT_FLAG_DIRECT)) {
-+                                           (audio_output_flags_t)(AUDIO_OUTPUT_FLAG_DIRECT | flags))) {
-                     if (mAvailableOutputDevices & profile->mSupportedDevices) {
-                         return mHwModules[i]->mOutputProfiles[j];
-                     }
-@@ -546,7 +557,7 @@ audio_io_handle_t AudioPolicyManagerBase::getOutput(AudioSystem::stream_type str
-     uint32_t latency = 0;
-     routing_strategy strategy = getStrategy((AudioSystem::stream_type)stream);
-     audio_devices_t device = getDeviceForStrategy(strategy, false /*fromCache*/);
--    ALOGV("getOutput() device %d, stream %d, samplingRate %d, format %x, channelMask %x, flags %x",
-+    ALOGD("getOutput() device %d, stream %d, samplingRate %d, format %x, channelMask %x, flags %x",
-           device, stream, samplingRate, format, channelMask, flags);
- 
- #ifdef AUDIO_POLICY_TEST
-@@ -687,7 +698,7 @@ audio_io_handle_t AudioPolicyManagerBase::getOutput(AudioSystem::stream_type str
-     ALOGW_IF((output == 0), "getOutput() could not find output for stream %d, samplingRate %d,"
-             "format %d, channels %x, flags %x", stream, samplingRate, format, channelMask, flags);
- 
--    ALOGV("getOutput() returns output %d", output);
-+    ALOGD("getOutput() returns output %d", output);
- 
-     return output;
- }
-@@ -742,7 +753,7 @@ status_t AudioPolicyManagerBase::startOutput(audio_io_handle_t output,
-                                              AudioSystem::stream_type stream,
-                                              audio_session_t session)
- {
--    ALOGV("startOutput() output %d, stream %d, session %d", output, stream, session);
-+    ALOGD("startOutput() output %d, stream %d, session %d", output, stream, session);
-     ssize_t index = mOutputs.indexOfKey(output);
-     if (index < 0) {
-         ALOGW("startOutput() unknown output %d", output);
-@@ -820,7 +831,7 @@ status_t AudioPolicyManagerBase::stopOutput(audio_io_handle_t output,
-     AudioOutputDescriptor *outputDesc = mOutputs.valueAt(index);
- 
-     // handle special case for sonification while in call
--    if (isInCall()) {
-+    if ((isInCall()) && (outputDesc->mRefCount[stream] == 1)) {
-         handleIncallSonification(stream, false, false);
-     }
- 
-@@ -915,7 +926,7 @@ audio_io_handle_t AudioPolicyManagerBase::getInput(int inputSource,
-     audio_io_handle_t input = 0;
-     audio_devices_t device = getDeviceForInputSource(inputSource);
- 
--    ALOGV("getInput() inputSource %d, samplingRate %d, format %d, channelMask %x, acoustics %x",
-+    ALOGD("getInput() inputSource %d, samplingRate %d, format %d, channelMask %x, acoustics %x",
-           inputSource, samplingRate, format, channelMask, acoustics);
- 
-     if (device == AUDIO_DEVICE_NONE) {
-@@ -1136,7 +1147,10 @@ status_t AudioPolicyManagerBase::setStreamVolumeIndex(AudioSystem::stream_type s
-     for (size_t i = 0; i < mOutputs.size(); i++) {
-         audio_devices_t curDevice =
-                 getDeviceForVolume(mOutputs.valueAt(i)->device());
--        if ((device == AUDIO_DEVICE_OUT_DEFAULT) || (device == curDevice)) {
-+#ifndef ICS_AUDIO_BLOB
-+        if ((device == AUDIO_DEVICE_OUT_DEFAULT) || (device == curDevice))
-+#endif
-+        {
-             status_t volStatus = checkAndSetVolume(stream, index, mOutputs.keyAt(i), curDevice);
-             if (volStatus != NO_ERROR) {
-                 status = volStatus;
-@@ -1153,6 +1167,7 @@ status_t AudioPolicyManagerBase::getStreamVolumeIndex(AudioSystem::stream_type s
-     if (index == NULL) {
-         return BAD_VALUE;
-     }
-+#ifndef ICS_AUDIO_BLOB
-     if (!audio_is_output_device(device)) {
-         return BAD_VALUE;
-     }
-@@ -1164,6 +1179,9 @@ status_t AudioPolicyManagerBase::getStreamVolumeIndex(AudioSystem::stream_type s
-     device = getDeviceForVolume(device);
- 
-     *index =  mStreams[stream].getVolumeIndex(device);
-+#else
-+    *index =  mStreams[stream].mIndexCur.valueAt(0);
-+#endif
-     ALOGV("getStreamVolumeIndex() stream %d device %08x index %d", stream, device, *index);
-     return NO_ERROR;
- }
-@@ -1481,37 +1499,93 @@ bool AudioPolicyManagerBase::isOffloadSupported(const audio_offload_info_t& offl
-      offloadInfo.stream_type, offloadInfo.bit_rate, offloadInfo.duration_us,
-      offloadInfo.has_video);
- 
--    // Check if offload has been disabled
-+    // Check if stream type is music, then only allow offload as of now.
-+    if (offloadInfo.stream_type != AUDIO_STREAM_MUSIC)
-+    {
-+        ALOGV("isOffloadSupported: stream_type != MUSIC, returning false");
-+        return false;
-+    }
-+
-     char propValue[PROPERTY_VALUE_MAX];
-+    bool pcmOffload = false;
-+    if (audio_is_offload_pcm(offloadInfo.format)) {
-+        if(property_get("audio.offload.pcm.enable", propValue, "false")) {
-+            bool prop_enabled = atoi(propValue) || !strncmp("true", propValue, 4);
-+            if (prop_enabled) {
-+                ALOGW("PCM offload property is enabled");
-+                pcmOffload = true;
-+            }
-+        }
-+        if (!pcmOffload) {
-+            ALOGD("copl: PCM offload disabled by property audio.offload.pcm.enable");
-+            return false;
-+        }
-+    }
-+
-+    // Check if offload has been disabled
-     if (property_get("audio.offload.disable", propValue, "0")) {
-         if (atoi(propValue) != 0) {
--            ALOGV("offload disabled by audio.offload.disable=%s", propValue );
-+            ALOGD("copl: offload disabled by audio.offload.disable=%s", propValue );
-             return false;
-         }
-     }
- 
--    // Check if stream type is music, then only allow offload as of now.
--    if (offloadInfo.stream_type != AUDIO_STREAM_MUSIC)
--    {
--        ALOGV("isOffloadSupported: stream_type != MUSIC, returning false");
-+    //check if it's multi-channel AAC format
-+    if (AudioSystem::popCount(offloadInfo.channel_mask) > 2
-+          && offloadInfo.format == AUDIO_FORMAT_AAC) {
-+        ALOGD("copl: offload disabled for multi-channel AAC format");
-         return false;
-     }
- 
--    //TODO: enable audio offloading with video when ready
-     if (offloadInfo.has_video)
-     {
--        ALOGV("isOffloadSupported: has_video == true, returning false");
--        return false;
-+        if(property_get("av.offload.enable", propValue, "false")) {
-+            bool prop_enabled = atoi(propValue) || !strncmp("true", propValue, 4);
-+            if (!prop_enabled) {
-+                ALOGW("offload disabled by av.offload.enable = %s ", propValue );
-+                return false;
-+            }
-+        } else {
-+            return false;
-+        }
-+
-+        if(offloadInfo.is_streaming) {
-+            if (property_get("av.streaming.offload.enable", propValue, "false")) {
-+                bool prop_enabled = atoi(propValue) || !strncmp("true", propValue, 4);
-+                if (!prop_enabled) {
-+                   ALOGW("offload disabled by av.streaming.offload.enable = %s ", propValue );
-+                   return false;
-+                }
-+            } else {
-+                //Do not offload AV streamnig if the property is not defined
-+                return false;
-+            }
-+        }
-+        ALOGD("copl: isOffloadSupported: has_video == true, property\
-+                set to enable offload");
-     }
- 
-     //If duration is less than minimum value defined in property, return false
-     if (property_get("audio.offload.min.duration.secs", propValue, NULL)) {
-         if (offloadInfo.duration_us < (atoi(propValue) * 1000000 )) {
--            ALOGV("Offload denied by duration < audio.offload.min.duration.secs(=%s)", propValue);
-+            ALOGD("copl: Offload denied by duration < audio.offload.min.duration.secs(=%s)", propValue);
-             return false;
-         }
-     } else if (offloadInfo.duration_us < OFFLOAD_DEFAULT_MIN_DURATION_SECS * 1000000) {
--        ALOGV("Offload denied by duration < default min(=%u)", OFFLOAD_DEFAULT_MIN_DURATION_SECS);
-+        ALOGD("copl: Offload denied by duration < default min(=%u)", OFFLOAD_DEFAULT_MIN_DURATION_SECS);
-+        //duration checks only valid for MP3/AAC formats,
-+        //do not check duration for other audio formats, e.g. dolby AAC/AC3 and amrwb+ formats
-+        if (offloadInfo.format == AUDIO_FORMAT_MP3 || offloadInfo.format == AUDIO_FORMAT_AAC || (pcmOffload && offloadInfo.bit_width < 24))
-+            return false;
-+    }
-+
-+    // Do not allow offloading if one non offloadable effect is enabled. This prevents from
-+    // creating an offloaded track and tearing it down immediately after start when audioflinger
-+    // detects there is an active non offloadable effect.
-+    // FIXME: We should check the audio session here but we do not have it in this context.
-+    // This may prevent offloading in rare situations where effects are left active by apps
-+    // in the background.
-+    if (isNonOffloadableEffectEnabled()) {
-         return false;
-     }
- 
-@@ -2242,7 +2316,7 @@ status_t AudioPolicyManagerBase::checkInputsForDevice(audio_devices_t device,
- 
- void AudioPolicyManagerBase::closeOutput(audio_io_handle_t output)
- {
--    ALOGV("closeOutput(%d)", output);
-+    ALOGD("closeOutput(%d)", output);
- 
-     AudioOutputDescriptor *outputDesc = mOutputs.valueFor(output);
-     if (outputDesc == NULL) {
-@@ -2324,7 +2398,7 @@ void AudioPolicyManagerBase::checkOutputForStrategy(routing_strategy strategy)
- {
-     audio_devices_t oldDevice = getDeviceForStrategy(strategy, true /*fromCache*/);
-     audio_devices_t newDevice = getDeviceForStrategy(strategy, false /*fromCache*/);
--    SortedVector<audio_io_handle_t> srcOutputs = getOutputsForDevice(oldDevice, mPreviousOutputs);
-+    SortedVector<audio_io_handle_t> srcOutputs = getOutputsForDevice(oldDevice, mOutputs);
-     SortedVector<audio_io_handle_t> dstOutputs = getOutputsForDevice(newDevice, mOutputs);
- 
-     if (!vectorsEqual(srcOutputs,dstOutputs)) {
-@@ -2418,7 +2492,7 @@ void AudioPolicyManagerBase::checkA2dpSuspend()
-     if (mA2dpSuspended) {
-         if (((mScoDeviceAddress == "") ||
-              ((mForceUse[AudioSystem::FOR_COMMUNICATION] != AudioSystem::FORCE_BT_SCO) &&
--              (mForceUse[AudioSystem::FOR_RECORD] != AudioSystem::FORCE_BT_SCO))) &&
-+              (mForceUse[AudioSystem::FOR_RECORD] != AudioSystem::FORCE_BT_SCO))) ||
-              ((mPhoneState != AudioSystem::MODE_IN_CALL) &&
-               (mPhoneState != AudioSystem::MODE_RINGTONE))) {
- 
-@@ -2428,7 +2502,7 @@ void AudioPolicyManagerBase::checkA2dpSuspend()
-     } else {
-         if (((mScoDeviceAddress != "") &&
-              ((mForceUse[AudioSystem::FOR_COMMUNICATION] == AudioSystem::FORCE_BT_SCO) ||
--              (mForceUse[AudioSystem::FOR_RECORD] == AudioSystem::FORCE_BT_SCO))) ||
-+              (mForceUse[AudioSystem::FOR_RECORD] == AudioSystem::FORCE_BT_SCO))) &&
-              ((mPhoneState == AudioSystem::MODE_IN_CALL) ||
-               (mPhoneState == AudioSystem::MODE_RINGTONE))) {
- 
-@@ -2443,6 +2517,7 @@ audio_devices_t AudioPolicyManagerBase::getNewDevice(audio_io_handle_t output, b
-     audio_devices_t device = AUDIO_DEVICE_NONE;
- 
-     AudioOutputDescriptor *outputDesc = mOutputs.valueFor(output);
-+    AudioOutputDescriptor *primaryOutputDesc = mOutputs.valueFor(mPrimaryOutput);
-     // check the following by order of priority to request a routing change if necessary:
-     // 1: the strategy enforced audible is active on the output:
-     //      use device for strategy enforced audible
-@@ -2461,7 +2536,8 @@ audio_devices_t AudioPolicyManagerBase::getNewDevice(audio_io_handle_t output, b
-     } else if (isInCall() ||
-                     outputDesc->isStrategyActive(STRATEGY_PHONE)) {
-         device = getDeviceForStrategy(STRATEGY_PHONE, fromCache);
--    } else if (outputDesc->isStrategyActive(STRATEGY_SONIFICATION)) {
-+    } else if (outputDesc->isStrategyActive(STRATEGY_SONIFICATION)||
-+                (primaryOutputDesc->isStrategyActive(STRATEGY_SONIFICATION)&& !primaryOutputDesc->isStrategyActive(STRATEGY_MEDIA))){
-         device = getDeviceForStrategy(STRATEGY_SONIFICATION, fromCache);
-     } else if (outputDesc->isStrategyActive(STRATEGY_SONIFICATION_RESPECTFUL)) {
-         device = getDeviceForStrategy(STRATEGY_SONIFICATION_RESPECTFUL, fromCache);
-@@ -2514,6 +2590,9 @@ AudioPolicyManagerBase::routing_strategy AudioPolicyManagerBase::getStrategy(
-         // while key clicks are played produces a poor result
-     case AudioSystem::TTS:
-     case AudioSystem::MUSIC:
-+#ifdef AUDIO_EXTN_INCALL_MUSIC_ENABLED
-+    case AudioSystem::INCALL_MUSIC:
-+#endif
-         return STRATEGY_MEDIA;
-     case AudioSystem::ENFORCED_AUDIBLE:
-         return STRATEGY_ENFORCED_AUDIBLE;
-@@ -2709,7 +2788,8 @@ audio_devices_t AudioPolicyManagerBase::getDeviceForStrategy(routing_strategy st
-         if (device2 == AUDIO_DEVICE_NONE) {
-             device2 = mAvailableOutputDevices & AUDIO_DEVICE_OUT_USB_DEVICE;
-         }
--        if (device2 == AUDIO_DEVICE_NONE) {
-+        if ((device2 == AUDIO_DEVICE_NONE) && (strategy != STRATEGY_SONIFICATION)) {
-+            // no sonification on digital docks (e.g. USB DACs)
-             device2 = mAvailableOutputDevices & AUDIO_DEVICE_OUT_DGTL_DOCK_HEADSET;
-         }
-         if ((device2 == AUDIO_DEVICE_NONE) && (strategy != STRATEGY_SONIFICATION)) {
-@@ -2818,6 +2898,9 @@ uint32_t AudioPolicyManagerBase::checkDeviceMuteStrategies(AudioOutputDescriptor
-     // wait for the PCM output buffers to empty before proceeding with the rest of the command
-     if (muteWaitMs > delayMs) {
-         muteWaitMs -= delayMs;
-+        if(outputDesc->mDevice == AUDIO_DEVICE_OUT_ANLG_DOCK_HEADSET) {
-+           muteWaitMs = muteWaitMs+10;
-+        }
-         usleep(muteWaitMs * 1000);
-         return muteWaitMs;
-     }
-@@ -2853,7 +2936,14 @@ uint32_t AudioPolicyManagerBase::setOutputDevice(audio_io_handle_t output,
- 
-     ALOGV("setOutputDevice() prevDevice %04x", prevDevice);
- 
--    if (device != AUDIO_DEVICE_NONE) {
-+    // Device Routing has not been triggered in the following scenario:
-+    // Start playback on HDMI/USB hs, pause it, unplug and plug HDMI
-+    //cable/usb hs, resume playback, music starts on speaker. To avoid
-+    //this, update mDevice even if device is 0 which triggers routing when
-+    // HDMI cable/usb hs is reconnected
-+    if (device != AUDIO_DEVICE_NONE ||
-+        prevDevice == AUDIO_DEVICE_OUT_AUX_DIGITAL ||
-+        prevDevice == AUDIO_DEVICE_OUT_ANLG_DOCK_HEADSET) {
-         outputDesc->mDevice = device;
- 
-         // Force routing if previously asked for this output
-@@ -2882,7 +2972,8 @@ uint32_t AudioPolicyManagerBase::setOutputDevice(audio_io_handle_t output,
-         return muteWaitMs;
-     }
- 
--    ALOGV("setOutputDevice() changing device");
-+    ALOGD("setOutputDevice() changing device from (%d) to (%d) \
-+        force (%d) delayMs (%d) on Output (%d)", prevDevice, device, force, delayMs, output);
-     // do the routing
-     param.addInt(String8(AudioParameter::keyRouting), (int)device);
-     mpClientInterface->setParameters(output, param.toString(), delayMs);
-@@ -3206,6 +3297,13 @@ const AudioPolicyManagerBase::VolumeCurvePoint
-         sSpeakerMediaVolumeCurve, // DEVICE_CATEGORY_SPEAKER
-         sDefaultMediaVolumeCurve  // DEVICE_CATEGORY_EARPIECE
-     },
-+#ifdef AUDIO_EXTN_INCALL_MUSIC_ENABLED
-+    { // AUDIO_STREAM_INCALL_MUSIC
-+        sDefaultMediaVolumeCurve, // DEVICE_CATEGORY_HEADSET
-+        sSpeakerMediaVolumeCurve, // DEVICE_CATEGORY_SPEAKER
-+        sDefaultMediaVolumeCurve  // DEVICE_CATEGORY_EARPIECE
-+    },
-+#endif
- };
- 
- void AudioPolicyManagerBase::initializeVolumeCurves()
-@@ -3918,6 +4016,10 @@ const struct StringToEnum sDeviceNameToEnumTable[] = {
-     STRING_TO_ENUM(AUDIO_DEVICE_OUT_SPEAKER),
-     STRING_TO_ENUM(AUDIO_DEVICE_OUT_WIRED_HEADSET),
-     STRING_TO_ENUM(AUDIO_DEVICE_OUT_WIRED_HEADPHONE),
-+#ifdef AUDIO_LEGACY_FORMATS_ENABLED
-+    STRING_TO_ENUM(AUDIO_DEVICE_OUT_ANC_HEADSET),
-+    STRING_TO_ENUM(AUDIO_DEVICE_OUT_ANC_HEADPHONE),
-+#endif
-     STRING_TO_ENUM(AUDIO_DEVICE_OUT_ALL_SCO),
-     STRING_TO_ENUM(AUDIO_DEVICE_OUT_ALL_A2DP),
-     STRING_TO_ENUM(AUDIO_DEVICE_OUT_AUX_DIGITAL),
-@@ -3925,11 +4027,21 @@ const struct StringToEnum sDeviceNameToEnumTable[] = {
-     STRING_TO_ENUM(AUDIO_DEVICE_OUT_ANLG_DOCK_HEADSET),
-     STRING_TO_ENUM(AUDIO_DEVICE_OUT_USB_DEVICE),
-     STRING_TO_ENUM(AUDIO_DEVICE_OUT_USB_ACCESSORY),
-+#ifdef AUDIO_EXTN_FM_ENABLED
-+    STRING_TO_ENUM(AUDIO_DEVICE_OUT_FM),
-+    STRING_TO_ENUM(AUDIO_DEVICE_OUT_FM_TX),
-+#endif
-     STRING_TO_ENUM(AUDIO_DEVICE_OUT_ALL_USB),
-+#ifdef AUDIO_EXTN_AFE_PROXY_ENABLED
-+    STRING_TO_ENUM(AUDIO_DEVICE_OUT_PROXY),
-+#endif
-     STRING_TO_ENUM(AUDIO_DEVICE_OUT_REMOTE_SUBMIX),
-     STRING_TO_ENUM(AUDIO_DEVICE_IN_BUILTIN_MIC),
-     STRING_TO_ENUM(AUDIO_DEVICE_IN_BLUETOOTH_SCO_HEADSET),
-     STRING_TO_ENUM(AUDIO_DEVICE_IN_WIRED_HEADSET),
-+#ifdef AUDIO_LEGACY_FORMATS_ENABLED
-+    STRING_TO_ENUM(AUDIO_DEVICE_IN_ANC_HEADSET),
-+#endif
-     STRING_TO_ENUM(AUDIO_DEVICE_IN_AUX_DIGITAL),
-     STRING_TO_ENUM(AUDIO_DEVICE_IN_VOICE_CALL),
-     STRING_TO_ENUM(AUDIO_DEVICE_IN_BACK_MIC),
-@@ -3939,6 +4051,14 @@ const struct StringToEnum sDeviceNameToEnumTable[] = {
-     STRING_TO_ENUM(AUDIO_DEVICE_IN_USB_ACCESSORY),
-     STRING_TO_ENUM(AUDIO_DEVICE_IN_USB_DEVICE),
-     STRING_TO_ENUM(AUDIO_DEVICE_IN_BLUETOOTH_A2DP),
-+#ifdef AUDIO_EXTN_FM_ENABLED
-+    STRING_TO_ENUM(AUDIO_DEVICE_IN_FM_RX),
-+    STRING_TO_ENUM(AUDIO_DEVICE_IN_FM_RX_A2DP),
-+#endif
-+#ifdef AUDIO_LEGACY_FORMATS_ENABLED
-+    STRING_TO_ENUM(AUDIO_DEVICE_IN_PROXY),
-+    STRING_TO_ENUM(AUDIO_DEVICE_IN_COMMUNICATION),
-+#endif
- };
- 
- const struct StringToEnum sFlagNameToEnumTable[] = {
-@@ -3948,6 +4068,16 @@ const struct StringToEnum sFlagNameToEnumTable[] = {
-     STRING_TO_ENUM(AUDIO_OUTPUT_FLAG_DEEP_BUFFER),
-     STRING_TO_ENUM(AUDIO_OUTPUT_FLAG_COMPRESS_OFFLOAD),
-     STRING_TO_ENUM(AUDIO_OUTPUT_FLAG_NON_BLOCKING),
-+#ifdef AUDIO_LEGACY_FORMATS_ENABLED
-+    STRING_TO_ENUM(AUDIO_OUTPUT_FLAG_LPA),
-+    STRING_TO_ENUM(AUDIO_OUTPUT_FLAG_TUNNEL),
-+#endif
-+#ifdef AUDIO_EXTN_INCALL_MUSIC_ENABLED
-+    STRING_TO_ENUM(AUDIO_OUTPUT_FLAG_INCALL_MUSIC),
-+#endif
-+#ifdef AUDIO_EXTN_COMPRESS_VOIP_ENABLED
-+    STRING_TO_ENUM(AUDIO_OUTPUT_FLAG_VOIP_RX),
-+#endif
- };
- 
- const struct StringToEnum sFormatNameToEnumTable[] = {
-@@ -3965,6 +4095,26 @@ const struct StringToEnum sFormatNameToEnumTable[] = {
-     STRING_TO_ENUM(AUDIO_FORMAT_OPUS),
-     STRING_TO_ENUM(AUDIO_FORMAT_AC3),
-     STRING_TO_ENUM(AUDIO_FORMAT_E_AC3),
-+#ifdef AUDIO_EXTN_FORMATS_ENABLED
-+    STRING_TO_ENUM(AUDIO_FORMAT_AC3),
-+    STRING_TO_ENUM(AUDIO_FORMAT_DTS),
-+    STRING_TO_ENUM(AUDIO_FORMAT_DTS_HD),
-+    STRING_TO_ENUM(AUDIO_FORMAT_WMA),
-+    STRING_TO_ENUM(AUDIO_FORMAT_WMA_PRO),
-+    STRING_TO_ENUM(AUDIO_FORMAT_AAC_ADIF),
-+    STRING_TO_ENUM(AUDIO_FORMAT_AMR_NB),
-+    STRING_TO_ENUM(AUDIO_FORMAT_AMR_WB),
-+    STRING_TO_ENUM(AUDIO_FORMAT_AMR_WB_PLUS),
-+    STRING_TO_ENUM(AUDIO_FORMAT_EVRC),
-+    STRING_TO_ENUM(AUDIO_FORMAT_EVRCB),
-+    STRING_TO_ENUM(AUDIO_FORMAT_EVRCWB),
-+    STRING_TO_ENUM(AUDIO_FORMAT_QCELP),
-+    STRING_TO_ENUM(AUDIO_FORMAT_MP2),
-+    STRING_TO_ENUM(AUDIO_FORMAT_EVRCNW),
-+    STRING_TO_ENUM(AUDIO_FORMAT_FLAC),
-+#endif
-+    STRING_TO_ENUM(AUDIO_FORMAT_PCM_16_BIT_OFFLOAD),
-+    STRING_TO_ENUM(AUDIO_FORMAT_PCM_24_BIT_OFFLOAD),
- };
- 
- const struct StringToEnum sOutChannelsNameToEnumTable[] = {
-@@ -3972,12 +4122,27 @@ const struct StringToEnum sOutChannelsNameToEnumTable[] = {
-     STRING_TO_ENUM(AUDIO_CHANNEL_OUT_STEREO),
-     STRING_TO_ENUM(AUDIO_CHANNEL_OUT_5POINT1),
-     STRING_TO_ENUM(AUDIO_CHANNEL_OUT_7POINT1),
-+#ifdef AUDIO_EXTN_DS1_DOLBY_DDP_ENABLED
-+    STRING_TO_ENUM(AUDIO_CHANNEL_OUT_2POINT1),
-+    STRING_TO_ENUM(AUDIO_CHANNEL_OUT_QUAD),
-+    STRING_TO_ENUM(AUDIO_CHANNEL_OUT_SURROUND),
-+    STRING_TO_ENUM(AUDIO_CHANNEL_OUT_PENTA),
-+    STRING_TO_ENUM(AUDIO_CHANNEL_OUT_6POINT1),
-+#endif
- };
- 
- const struct StringToEnum sInChannelsNameToEnumTable[] = {
-     STRING_TO_ENUM(AUDIO_CHANNEL_IN_MONO),
-     STRING_TO_ENUM(AUDIO_CHANNEL_IN_STEREO),
-     STRING_TO_ENUM(AUDIO_CHANNEL_IN_FRONT_BACK),
-+#ifdef AUDIO_EXTN_SSR_ENABLED
-+    STRING_TO_ENUM(AUDIO_CHANNEL_IN_5POINT1),
-+#endif
-+#ifdef AUDIO_LEGACY_FORMATS_ENABLED
-+    STRING_TO_ENUM(AUDIO_CHANNEL_IN_VOICE_CALL_MONO),
-+    STRING_TO_ENUM(AUDIO_CHANNEL_IN_VOICE_DNLINK_MONO),
-+    STRING_TO_ENUM(AUDIO_CHANNEL_IN_VOICE_UPLINK_MONO),
-+#endif
- };
- 
- 
-diff --git a/audio/audio_hw_hal.cpp b/audio/audio_hw_hal.cpp
-index d15044a..e5e3d4b 100644
---- a/audio/audio_hw_hal.cpp
-+++ b/audio/audio_hw_hal.cpp
-@@ -250,6 +250,7 @@ static int out_get_render_position(const struct audio_stream_out *stream,
-     return out->legacy_out->getRenderPosition(dsp_frames);
- }
- 
-+#ifndef ICS_AUDIO_BLOB
- static int out_get_next_write_timestamp(const struct audio_stream_out *stream,
-                                         int64_t *timestamp)
- {
-@@ -257,6 +258,7 @@ static int out_get_next_write_timestamp(const struct audio_stream_out *stream,
-         reinterpret_cast<const struct legacy_stream_out *>(stream);
-     return out->legacy_out->getNextWriteTimestamp(timestamp);
- }
-+#endif
- 
- static int out_add_audio_effect(const struct audio_stream *stream, effect_handle_t effect)
- {
-@@ -436,11 +438,13 @@ static int adev_set_master_volume(struct audio_hw_device *dev, float volume)
-     return ladev->hwif->setMasterVolume(volume);
- }
- 
-+#ifndef ICS_AUDIO_BLOB
- static int adev_get_master_volume(struct audio_hw_device *dev, float* volume)
- {
-     struct legacy_audio_device *ladev = to_ladev(dev);
-     return ladev->hwif->getMasterVolume(volume);
- }
-+#endif
- 
- static int adev_set_mode(struct audio_hw_device *dev, audio_mode_t mode)
- {
-@@ -477,6 +481,7 @@ static char * adev_get_parameters(const struct audio_hw_device *dev,
-     return strdup(s8.string());
- }
- 
-+#ifndef ICS_AUDIO_BLOB
- static size_t adev_get_input_buffer_size(const struct audio_hw_device *dev,
-                                          const struct audio_config *config)
- {
-@@ -484,7 +489,17 @@ static size_t adev_get_input_buffer_size(const struct audio_hw_device *dev,
-     return ladev->hwif->getInputBufferSize(config->sample_rate, (int) config->format,
-                                            audio_channel_count_from_in_mask(config->channel_mask));
- }
-+#else
-+static size_t adev_get_input_buffer_size(const struct audio_hw_device *dev,
-+                                         uint32_t sample_rate, int format,
-+                                         int channel_count)
-+{
-+    const struct legacy_audio_device *ladev = to_cladev(dev);
-+    return ladev->hwif->getInputBufferSize(sample_rate, format, channel_count);
-+}
-+#endif
- 
-+#ifndef ICS_AUDIO_BLOB
- static int adev_open_output_stream(struct audio_hw_device *dev,
-                                    audio_io_handle_t handle,
-                                    audio_devices_t devices,
-@@ -492,6 +507,14 @@ static int adev_open_output_stream(struct audio_hw_device *dev,
-                                    struct audio_config *config,
-                                    struct audio_stream_out **stream_out,
-                                    const char *address __unused)
-+#else
-+static int adev_open_output_stream(struct audio_hw_device *dev,
-+                                   uint32_t devices,
-+                                   int *format,
-+                                   uint32_t *channels,
-+                                   uint32_t *sample_rate,
-+                                   struct audio_stream_out **stream_out)
-+#endif
- {
-     struct legacy_audio_device *ladev = to_ladev(dev);
-     status_t status;
-@@ -508,6 +531,11 @@ static int adev_open_output_stream(struct audio_hw_device *dev,
-                                                     (int *) &config->format,
-                                                     &config->channel_mask,
-                                                     &config->sample_rate, &status);
-+#else
-+    out->legacy_out = ladev->hwif->openOutputStream(devices, format, channels,
-+                                                    sample_rate, &status);
-+#endif
-+
-     if (!out->legacy_out) {
-         ret = status;
-         goto err_open;
-@@ -529,7 +557,9 @@ static int adev_open_output_stream(struct audio_hw_device *dev,
-     out->stream.set_volume = out_set_volume;
-     out->stream.write = out_write;
-     out->stream.get_render_position = out_get_render_position;
-+#ifndef ICS_AUDIO_BLOB
-     out->stream.get_next_write_timestamp = out_get_next_write_timestamp;
-+#endif
- 
-     *stream_out = &out->stream;
-     return 0;
-@@ -552,6 +582,7 @@ static void adev_close_output_stream(struct audio_hw_device *dev,
- 
- /** This method creates and opens the audio hardware input stream */
- static int adev_open_input_stream(struct audio_hw_device *dev,
-+#ifndef ICS_AUDIO_BLOB
-                                   audio_io_handle_t handle,
-                                   audio_devices_t devices,
-                                   struct audio_config *config,
-@@ -571,9 +602,15 @@ static int adev_open_input_stream(struct audio_hw_device *dev,
- 
-     devices = convert_audio_device(devices, HAL_API_REV_2_0, HAL_API_REV_1_0);
- 
-+#ifndef ICS_AUDIO_BLOB
-     in->legacy_in = ladev->hwif->openInputStream(devices, (int *) &config->format,
-                                                  &config->channel_mask, &config->sample_rate,
-                                                  &status, (AudioSystem::audio_in_acoustics)0);
-+#else
-+    in->legacy_in = ladev->hwif->openInputStream(devices, format, channels,
-+                                    sample_rate, &status,
-+                                    (AudioSystem::audio_in_acoustics)acoustics);
-+#endif
-     if (!in->legacy_in) {
-         ret = status;
-         goto err_open;
-@@ -660,7 +697,9 @@ static int legacy_adev_open(const hw_module_t* module, const char* name,
-     ladev->device.init_check = adev_init_check;
-     ladev->device.set_voice_volume = adev_set_voice_volume;
-     ladev->device.set_master_volume = adev_set_master_volume;
-+#ifndef ICS_AUDIO_BLOB
-     ladev->device.get_master_volume = adev_get_master_volume;
-+#endif
-     ladev->device.set_mode = adev_set_mode;
-     ladev->device.set_mic_mute = adev_set_mic_mute;
-     ladev->device.get_mic_mute = adev_get_mic_mute;
-@@ -668,8 +707,8 @@ static int legacy_adev_open(const hw_module_t* module, const char* name,
-     ladev->device.get_parameters = adev_get_parameters;
-     ladev->device.get_input_buffer_size = adev_get_input_buffer_size;
-     ladev->device.open_output_stream = adev_open_output_stream;
--    ladev->device.close_output_stream = adev_close_output_stream;
-     ladev->device.open_input_stream = adev_open_input_stream;
-+    ladev->device.close_output_stream = adev_close_output_stream;
-     ladev->device.close_input_stream = adev_close_input_stream;
-     ladev->device.dump = adev_dump;
- 
-diff --git a/audio/audio_policy_hal.cpp b/audio/audio_policy_hal.cpp
-index b7fe245..e8b5d35 100644
---- a/audio/audio_policy_hal.cpp
-+++ b/audio/audio_policy_hal.cpp
-@@ -365,8 +365,10 @@ static int create_legacy_ap(const struct audio_policy_device *device,
-     lap->policy.init_stream_volume = ap_init_stream_volume;
-     lap->policy.set_stream_volume_index = ap_set_stream_volume_index;
-     lap->policy.get_stream_volume_index = ap_get_stream_volume_index;
-+#ifndef ICS_AUDIO_BLOB
-     lap->policy.set_stream_volume_index_for_device = ap_set_stream_volume_index_for_device;
-     lap->policy.get_stream_volume_index_for_device = ap_get_stream_volume_index_for_device;
-+#endif
-     lap->policy.get_strategy_for_stream = ap_get_strategy_for_stream;
-     lap->policy.get_devices_for_stream = ap_get_devices_for_stream;
-     lap->policy.get_output_for_effect = ap_get_output_for_effect;
-@@ -374,8 +376,12 @@ static int create_legacy_ap(const struct audio_policy_device *device,
-     lap->policy.unregister_effect = ap_unregister_effect;
-     lap->policy.set_effect_enabled = ap_set_effect_enabled;
-     lap->policy.is_stream_active = ap_is_stream_active;
-+#ifndef ICS_AUDIO_BLOB
-+#ifndef MR1_AUDIO_BLOB
-     lap->policy.is_stream_active_remotely = ap_is_stream_active_remotely;
-+#endif
-     lap->policy.is_source_active = ap_is_source_active;
-+#endif
-     lap->policy.dump = ap_dump;
-     lap->policy.is_offload_supported = ap_is_offload_supported;
- 
-diff --git a/include/hardware_legacy/AudioHardwareInterface.h b/include/hardware_legacy/AudioHardwareInterface.h
-index b08fece..a627f3b 100644
---- a/include/hardware_legacy/AudioHardwareInterface.h
-+++ b/include/hardware_legacy/AudioHardwareInterface.h
-@@ -1,5 +1,7 @@
- /*
-  * Copyright (C) 2007 The Android Open Source Project
-+ * Copyright (c) 2011-2013, The Linux Foundation. All rights reserved.
-+ * Not a Contribution.
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-@@ -115,7 +117,21 @@ public:
-      * get the local time at which the next write to the audio driver will be
-      * presented
-      */
-+#ifndef ICS_AUDIO_BLOB
-     virtual status_t    getNextWriteTimestamp(int64_t *timestamp);
-+#ifdef QCOM_DIRECTTRACK
-+    virtual status_t    start() {return INVALID_OPERATION;}
-+    virtual status_t    pause()  {return INVALID_OPERATION;}
-+    virtual status_t    flush()  {return INVALID_OPERATION;}
-+    virtual status_t    stop()  {return INVALID_OPERATION;}
-+    virtual int         setObserver(void *observer)  {return INVALID_OPERATION;}
-+    virtual status_t    getBufferInfo(buf_info **buf) {return INVALID_OPERATION;}
-+    virtual status_t    isBufferAvailable(int *isAvail) {
-+        *isAvail = true;
-+        return NO_ERROR;
-+    }
-+#endif
-+#endif
- 
-     /**
-      * Return a recent count of the number of audio frames presented to an external observer.
-diff --git a/include/hardware_legacy/AudioPolicyManagerBase.h b/include/hardware_legacy/AudioPolicyManagerBase.h
-index 9af30dd..60e051f 100644
---- a/include/hardware_legacy/AudioPolicyManagerBase.h
-+++ b/include/hardware_legacy/AudioPolicyManagerBase.h
-@@ -1,5 +1,7 @@
- /*
-  * Copyright (C) 2009 The Android Open Source Project
-+ * Copyright (c) 2012, The Linux Foundation. All rights reserved.
-+ * Not a Contribution.
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-@@ -46,7 +48,7 @@ namespace android_audio_legacy {
- #define SONIFICATION_RESPECTFUL_AFTER_MUSIC_DELAY 5000
- // Time in milliseconds during witch some streams are muted while the audio path
- // is switched
--#define MUTE_TIME_MS 2000
-+#define MUTE_TIME_MS 500
- 
- #define NUM_TEST_OUTPUTS 5
- 
-@@ -362,7 +364,7 @@ protected:
- 
-         // change the route of the specified output. Returns the number of ms we have slept to
-         // allow new routing to take effect in certain cases.
--        uint32_t setOutputDevice(audio_io_handle_t output,
-+        virtual uint32_t setOutputDevice(audio_io_handle_t output,
-                              audio_devices_t device,
-                              bool force = false,
-                              int delayMs = 0);
-@@ -383,7 +385,7 @@ protected:
-         virtual float computeVolume(int stream, int index, audio_io_handle_t output, audio_devices_t device);
- 
-         // check that volume change is permitted, compute and send new volume to audio hardware
--        status_t checkAndSetVolume(int stream, int index, audio_io_handle_t output, audio_devices_t device, int delayMs = 0, bool force = false);
-+        virtual status_t checkAndSetVolume(int stream, int index, audio_io_handle_t output, audio_devices_t device, int delayMs = 0, bool force = false);
- 
-         // apply all stream volumes to the specified output and device
-         void applyStreamVolumes(audio_io_handle_t output, audio_devices_t device, int delayMs = 0, bool force = false);
-@@ -396,7 +398,7 @@ protected:
-                              audio_devices_t device = (audio_devices_t)0);
- 
-         // Mute or unmute the stream on the specified output
--        void setStreamMute(int stream,
-+        virtual void setStreamMute(int stream,
-                            bool on,
-                            audio_io_handle_t output,
-                            int delayMs = 0,
-@@ -525,7 +527,7 @@ protected:
-         void loadGlobalConfig(cnode *root);
-         status_t loadAudioPolicyConfig(const char *path);
-         void defaultAudioPolicyConfig(void);
--
-+        static bool isVirtualInputDevice(audio_devices_t device);
- 
-         AudioPolicyClientInterface *mpClientInterface;  // audio policy client interface
-         audio_io_handle_t mPrimaryOutput;              // primary output handle
-@@ -594,7 +596,6 @@ private:
-         // updates device caching and output for streams that can influence the
-         //    routing of notifications
-         void handleNotificationRoutingForStream(AudioSystem::stream_type stream);
--        static bool isVirtualInputDevice(audio_devices_t device);
- };
- 
- };
-diff --git a/include/hardware_legacy/AudioSystemLegacy.h b/include/hardware_legacy/AudioSystemLegacy.h
-index 6a8c5b0..0df2489 100644
---- a/include/hardware_legacy/AudioSystemLegacy.h
-+++ b/include/hardware_legacy/AudioSystemLegacy.h
-@@ -1,4 +1,7 @@
- /*
-+ * Copyright (c) 2013, The Linux Foundation. All rights reserved.
-+ * Not a contribution.
-+ *
-  * Copyright (C) 2008 The Android Open Source Project
-  * Copyright (c) 2011-2013, The Linux Foundation. All rights reserved.
-  *
 diff --git a/include/hardware_legacy/driver_nl80211.h b/include/hardware_legacy/driver_nl80211.h
 new file mode 100644
 index 0000000..40c941a
@@ -1037,26 +220,8 @@ index 0000000..40c941a
 +};
 +
 +#endif
-diff --git a/power/power.c b/power/power.c
-index 368de5b..cf646f6 100644
---- a/power/power.c
-+++ b/power/power.c
-@@ -123,3 +123,13 @@ release_wake_lock(const char* id)
-     }
-     return len;
- }
-+
-+#ifdef SAMSUNG_DVFS
-+void acquire_dvfs_lock()
-+{
-+}
-+
-+void release_dvfs_lock()
-+{
-+}
-+#endif
 diff --git a/wifi/Android.mk b/wifi/Android.mk
-index 7610a9e..1eb545e 100644
+index 7610a9e..2a62497 100644
 --- a/wifi/Android.mk
 +++ b/wifi/Android.mk
 @@ -15,6 +15,9 @@ endif
@@ -1069,7 +234,7 @@ index 7610a9e..1eb545e 100644
  ifdef WIFI_DRIVER_FW_PATH_STA
  LOCAL_CFLAGS += -DWIFI_DRIVER_FW_PATH_STA=\"$(WIFI_DRIVER_FW_PATH_STA)\"
  endif
-@@ -69,4 +72,15 @@ LOCAL_CFLAGS += -DSAMSUNG_WIFI
+@@ -69,4 +72,10 @@ LOCAL_CFLAGS += -DSAMSUNG_WIFI
  LOCAL_C_INCLUDES += hardware/samsung/macloader/include
  endif
  
@@ -1079,25 +244,16 @@ index 7610a9e..1eb545e 100644
 +LOCAL_SHARED_LIBRARIES += libMarvellWireless
 +endif
 +
-+ifdef WPA_SUPPLICANT_VERSION
-+LOCAL_CFLAGS += -DLIBWPA_CLIENT_EXISTS
-+LOCAL_SHARED_LIBRARIES += libwpa_client
-+endif
  LOCAL_SHARED_LIBRARIES += libnetutils
-+
 diff --git a/wifi/wifi.c b/wifi/wifi.c
-index e9a2958..a189125 100644
+index e9a2958..55aff3d 100644
 --- a/wifi/wifi.c
 +++ b/wifi/wifi.c
-@@ -59,6 +59,23 @@
+@@ -59,6 +59,19 @@
  #include <samsung_macloader.h>
  #endif
  
-+static struct wpa_ctrl *ctrl_conn;
-+static struct wpa_ctrl *monitor_conn;
-+
 +/* socket pair used to exit from a blocking read */
-+static int exit_sockets[2];
 +static int Dbg = 0;
 +
 +#ifdef MRVL_WIFI
@@ -1113,16 +269,7 @@ index e9a2958..a189125 100644
  extern int do_dhcp();
  extern int ifc_init();
  extern void ifc_close();
-@@ -139,8 +156,6 @@ static const char EXT_MODULE_PATH[] = WIFI_EXT_MODULE_PATH;
- #define WIFI_DRIVER_FW_PATH_PARAM	"/sys/module/wlan/parameters/fwpath"
- #endif
- 
--#define WIFI_DRIVER_LOADER_DELAY	1000000
--
- static const char IFACE_DIR[]           = "/data/system/wpa_supplicant";
- #ifdef WIFI_DRIVER_MODULE_PATH
- static const char DRIVER_MODULE_NAME[]  = WIFI_DRIVER_MODULE_NAME;
-@@ -175,6 +190,7 @@ static unsigned char dummy_key[21] = { 0x02, 0x11, 0xbe, 0x33, 0x43, 0x35,
+@@ -175,6 +188,7 @@ static unsigned char dummy_key[21] = { 0x02, 0x11, 0xbe, 0x33, 0x43, 0x35,
  static char supplicant_name[PROPERTY_VALUE_MAX];
  /* Is either SUPP_PROP_NAME or P2P_PROP_NAME */
  static char supplicant_prop_name[PROPERTY_KEY_MAX];
@@ -1130,14 +277,14 @@ index e9a2958..a189125 100644
  
  #ifdef SAMSUNG_WIFI
  char* get_samsung_wifi_type()
-@@ -347,8 +363,48 @@ int is_wifi_driver_loaded() {
+@@ -347,8 +361,48 @@ int is_wifi_driver_loaded() {
  #endif
  }
  
 +#ifdef MRVL_WIFI
 +#define MAX_RETRY 2
-+int wifi_load_driver()
-+{
+ int wifi_load_driver()
+ {
 +    int ret = 0;
 +    int retry = MAX_RETRY;
 +    while (retry-- > 0) {
@@ -1173,13 +320,13 @@ index e9a2958..a189125 100644
 +}
 +#else
 +
- int wifi_load_driver()
- {
++int wifi_load_driver()
++{
 +
      char driver_status[PROPERTY_VALUE_MAX];
      int count = 100; /* wait at most 20 seconds for completion */
  #ifdef WIFI_DRIVER_MODULE_PATH
-@@ -456,6 +512,7 @@ int wifi_unload_driver()
+@@ -456,6 +510,7 @@ int wifi_unload_driver()
      return 0;
  #endif
  }
@@ -1187,7 +334,7 @@ index e9a2958..a189125 100644
  
  int ensure_entropy_file_exists()
  {
-@@ -784,6 +841,7 @@ int wifi_start_supplicant(int p2p_supported)
+@@ -784,6 +839,7 @@ int wifi_start_supplicant(int p2p_supported)
  {
      char supp_status[PROPERTY_VALUE_MAX] = {'\0'};
      int count = 200; /* wait at most 20 seconds for completion */
@@ -1195,7 +342,7 @@ index e9a2958..a189125 100644
      const prop_info *pi;
      unsigned serial = 0, i;
  
-@@ -791,6 +849,15 @@ int wifi_start_supplicant(int p2p_supported)
+@@ -791,6 +847,15 @@ int wifi_start_supplicant(int p2p_supported)
          return -1;
      }
  
@@ -1211,7 +358,7 @@ index e9a2958..a189125 100644
      if (p2p_supported) {
          strcpy(supplicant_name, P2P_SUPPLICANT_NAME);
          strcpy(supplicant_prop_name, P2P_PROP_NAME);
-@@ -849,8 +916,21 @@ int wifi_start_supplicant(int p2p_supported)
+@@ -849,6 +914,18 @@ int wifi_start_supplicant(int p2p_supported)
      property_get("wifi.interface", primary_iface, WIFI_TEST_INTERFACE);
  
      property_set("ctl.start", supplicant_name);
@@ -1229,11 +376,8 @@ index e9a2958..a189125 100644
 +
      sched_yield();
  
-+
      while (count-- > 0) {
-         if (pi == NULL) {
-             pi = __system_property_find(supplicant_prop_name);
-@@ -970,9 +1050,85 @@ int wifi_connect_to_supplicant()
+@@ -970,9 +1047,84 @@ int wifi_connect_to_supplicant()
      return wifi_connect_on_socket_path(path);
  }
  
@@ -1309,7 +453,6 @@ index e9a2958..a189125 100644
  int wifi_send_command(const char *cmd, char *reply, size_t *reply_len)
  {
      int ret;
-+
 +#ifdef MRVL_WIFI
 +    if (fw_state == FW_STATE_HUNG) {
 +        ALOGD("WiFi firmware hang: Skip command '%s'\n", cmd);
@@ -1319,7 +462,7 @@ index e9a2958..a189125 100644
      if (ctrl_conn == NULL) {
          ALOGV("Not connected to wpa_supplicant - \"%s\" command dropped.\n", cmd);
          return -1;
-@@ -980,15 +1136,33 @@ int wifi_send_command(const char *cmd, char *reply, size_t *reply_len)
+@@ -980,15 +1132,33 @@ int wifi_send_command(const char *cmd, char *reply, size_t *reply_len)
      ret = wpa_ctrl_request(ctrl_conn, cmd, strlen(cmd), reply, reply_len, NULL);
      if (ret == -2) {
          ALOGD("'%s' command timed out.\n", cmd);
@@ -1329,15 +472,15 @@ index e9a2958..a189125 100644
 +            wifi_uap_force_poweroff();
 +        }
 +#endif
++        /* unblocks the monitor receive socket for termination */
++        TEMP_FAILURE_RETRY(write(exit_sockets[0], "T", 1));
++        return -2;
++    } else if (ret < 0) {
++        ALOGD("Fail to implement command '%s'.\n", cmd);
          /* unblocks the monitor receive socket for termination */
          TEMP_FAILURE_RETRY(write(exit_sockets[0], "T", 1));
          return -2;
 -    } else if (ret < 0 || strncmp(reply, "FAIL", 4) == 0) {
-+    } else if (ret < 0) {
-+        ALOGD("Fail to implement command '%s'.\n", cmd);
-+        /* unblocks the monitor receive socket for termination */
-+        TEMP_FAILURE_RETRY(write(exit_sockets[0], "T", 1));
-+        return -2;
 +    } else if (strncmp(reply, "FAIL", 4) == 0) {
          return -1;
      }
@@ -1354,7 +497,7 @@ index e9a2958..a189125 100644
      return 0;
  }
  
-@@ -1075,9 +1249,9 @@ int wifi_wait_on_socket(char *buf, size_t buflen)
+@@ -1075,9 +1245,9 @@ int wifi_wait_on_socket(char *buf, size_t buflen)
      /*
       * Events strings are in the format
       *
@@ -1366,7 +509,7 @@ index e9a2958..a189125 100644
       *
       * where N is the message level in numerical form (0=VERBOSE, 1=DEBUG,
       * etc.) and XXX is the event name. The level information is not useful
-@@ -1200,3 +1374,32 @@ int wifi_set_mode(int mode) {
+@@ -1200,3 +1370,32 @@ int wifi_set_mode(int mode) {
      wifi_mode = mode;
      return 0;
  }
