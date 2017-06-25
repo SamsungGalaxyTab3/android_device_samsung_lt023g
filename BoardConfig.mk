@@ -57,10 +57,6 @@ TARGET_KERNEL_CROSS_COMPILE_PREFIX := arm-linux-androideabi-
 # build old-style zip files (required for ota updater)
 BLOCK_BASED_OTA := false
 
-# Enable LZMA Compression
-BOARD_CUSTOM_BOOTIMG_MK := $(LOCAL_PATH)/custombootimg.mk
-BOARD_CANT_BUILD_RECOVERY_FROM_BOOT_PATCH := true
-
 # Partitions
 TARGET_USERIMAGES_USE_EXT4 := true
 BOARD_BOOTIMAGE_PARTITION_SIZE := 12582912
