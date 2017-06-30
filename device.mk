@@ -1,19 +1,32 @@
+$(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
+
+# language
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
-# The gps config appropriate for this device
-#$(call inherit-product, device/common/gps/gps_us_supl.mk)
+# Inherit from the common Open Source product configuration
+$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 
-$(call inherit-product, build/target/product/full.mk)
+# Dalvik heap configurations
+$(call inherit-product-if-exists, frameworks/native/build/tablet-7in-hdpi-1024-dalvik-heap.mk)
 
+# Call hwui memory config(needs to be taken a look at.)
+#$(call inherit-product-if-exists, frameworks/native/build/tablet-7in-hdpi-1024-hwui-memory.mk)
+
+# Vendor
 $(call inherit-product, vendor/samsung/lt023g/lt023g-vendor.mk)
 
 LOCAL_PATH := device/samsung/lt023g
+
+# Overlay Path
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
-# Enable higher-res drawables while keeping mdpi as primary source
+# Screen Density Enable higher-res drawables while keeping mdpi as primary source
 PRODUCT_AAPT_CONFIG := large mdpi hdpi xhdpi
 PRODUCT_AAPT_PREF_CONFIG := mdpi
 PRODUCT_LOCALES += mdpi
+
+#Assert
+TARGET_OTA_ASSERT_DEVICE := lt023g,lt02,SM-T211
 
 # API (for CTS backward compatibility)
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -154,20 +167,3 @@ PRODUCT_PACKAGES += \
     MarvellWirelessDaemon \
     wpa_supplicant \
     wpa_supplicant.conf
-
-$(call inherit-product, build/target/product/full_base.mk)
-
-$(call inherit-product-if-exists, frameworks/native/build/tablet-7in-hdpi-1024-dalvik-heap.mk)
-$(call inherit-product-if-exists, vendor/marvell/generic/sd8787/FwImage/sd8787fw.mk)
-$(call inherit-product-if-exists, vendor/marvell/generic/sd8787/sd8787.mk)
-$(call inherit-product-if-exists, vendor/marvell/generic/sd8787/sd8787_modules.mk)
-
-
-#hack for prebult kernel
-ifeq ($(TARGET_PREBUILT_KERNEL),)
-	LOCAL_KERNEL := $(LOCAL_PATH)/prebuilt/kernel
-else
-	LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
-endif
-PRODUCT_COPY_FILES += \
-    $(LOCAL_KERNEL):prebuilt/kernel

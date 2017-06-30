@@ -1,2 +1,2 @@
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/lt023g.mk
+    $(LOCAL_DIR)/lineage.mk
