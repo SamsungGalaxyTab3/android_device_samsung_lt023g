@@ -2,7 +2,7 @@ echo $1
 rootdirectory="$PWD"
 # ---------------------------------
 
-dirs="hardware/libhardware_legacy"
+dirs="frameworks/native hardware/libhardware_legacy"
 
 for dir in $dirs ; do
 	cd $rootdirectory

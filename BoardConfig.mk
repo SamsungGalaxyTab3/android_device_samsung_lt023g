@@ -38,7 +38,7 @@ BOARD_USES_MRVL_HARDWARE := true
 # Kernel
 BOARD_KERNEL_SEPARATED_DT := true
 BOARD_DTBTOOL_ARGS := -2
-BOARD_KERNEL_CMDLINE := androidboot.hardware=lt023g ehci-hcd.park=3 androidboot.selinux=permissive
+BOARD_KERNEL_CMDLINE := androidboot.hardware=pxa988 ehci-hcd.park=3 androidboot.selinux=permissive
 BOARD_KERNEL_BASE := 0x10000000
 TARGET_KERNEL_ARCH := arm
 BOARD_MKBOOTIMG_ARGS := \
@@ -47,12 +47,13 @@ BOARD_MKBOOTIMG_ARGS := \
 	--board SscSPs
 BOARD_KERNEL_PAGESIZE := 2048
 ## prebuilt kernel in case of no source
-TARGET_PREBUILT_KERNEL := $(LOCAL_PATH)/prebuilt/kernel
+#TARGET_PREBUILT_KERNEL := $(LOCAL_PATH)/prebuilt/kernel
 ## kernel source will be used if available
 TARGET_KERNEL_SOURCE := kernel/samsung/lt02
 TARGET_KERNEL_CONFIG := lt023g_defconfig
-TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-android-
-BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
+TARGET_KERNEL_VARIANT_CONFIG := pxa986_lt023g_defconfig
+TARGET_KERNEL_CROSS_COMPILE_PREFIX := arm-linux-androideabi-
+#BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 
 # build old-style zip files (required for ota updater)
 BLOCK_BASED_OTA := false
@@ -120,12 +121,14 @@ WPA_SUPPLICANT_VERSION := VER_0_8_X
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_mrvl
 BOARD_HOSTAPD_DRIVER := NL80211
 BOARD_HOSTAPD_PRIVATE_LIB := lib_driver_cmd_mrvl
-BOARD_WLAN_DEVICE := mrvl
-WIFI_DRIVER_FW_PATH_PARAM := "/proc/mwlan/config"
+BOARD_WLAN_DEVICE := mrvl8787
+BOARD_WLAN_VENDOR := MRVL
+WIFI_DRIVER_FW_PATH_PARAM := "/sys/module/sd8xxx/parameters/firmware_path"
 WIFI_DRIVER_FW_PATH_STA := "/system/etc/firmware/mrvl/sd8787_uapsta.bin"
 WIFI_DRIVER_FW_PATH_AP := "/system/etc/firmware/mrvl/sd8787_uapsta.bin"
 WIFI_DRIVER_FW_PATH_P2P := "/system/etc/firmware/mrvl/sd8787_uapsta.bin"
 CONFIG_CTRL_IFACE := true
+MRVL_WIRELESS_DAEMON_API := true
 
 # Bluetooth
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(LOCAL_PATH)/bluetooth
@@ -146,26 +149,11 @@ BOARD_SEPOLICY_DIRS += \
     $(LOCAL_PATH)/sepolicy
 
 # Camera
+TARGET_PROVIDES_CAMERA_HAL := true
+USE_DEVICE_SPECIFIC_CAMERA := true
+TARGET_NEEDS_PLATFORM_TEXT_RELOCATIONS := true
 TARGET_HAS_LEGACY_CAMERA_HAL1 := true
-
-#Hack for prebuilt kernel
-#ifeq ($(TARGET_DEVICE),lt023g)
-#$(shell mkdir -p $(OUT)/obj/KERNEL_OBJ/usr)
-#$(shell touch $(OUT)/obj/KERNEL_OBJ/usr/export_includes)
-#endif
-
-#hack for prebult kernel
-#ifeq ($(TARGET_PREBUILT_KERNEL),)
-#	LOCAL_KERNEL := $(LOCAL_PATH)/prebuilt/kernel
-#else
-#	LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
-#endif
-#PRODUCT_COPY_FILES += \
-#    $(LOCAL_KERNEL):prebuilt/kernel
-
-
-
-# Extras
+TARGET_TS_MAKEUP := true
 
 # Vold
 BOARD_VOLD_MAX_PARTITIONS := 17
