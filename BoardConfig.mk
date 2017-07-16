@@ -36,8 +36,6 @@ NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
 BOARD_USES_MRVL_HARDWARE := true
 
 # Kernel
-BOARD_KERNEL_SEPARATED_DT := true
-BOARD_DTBTOOL_ARGS := -2
 BOARD_KERNEL_CMDLINE := androidboot.hardware=pxa988 ehci-hcd.park=3 androidboot.selinux=permissive
 BOARD_KERNEL_BASE := 0x10000000
 TARGET_KERNEL_ARCH := arm
