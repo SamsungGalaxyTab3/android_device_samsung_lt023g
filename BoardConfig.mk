@@ -50,8 +50,8 @@ BOARD_KERNEL_PAGESIZE := 2048
 #TARGET_PREBUILT_KERNEL := $(LOCAL_PATH)/prebuilt/kernel
 ## kernel source will be used if available
 TARGET_KERNEL_SOURCE := kernel/samsung/lt02
-TARGET_KERNEL_CONFIG := lt023g_defconfig
-TARGET_KERNEL_VARIANT_CONFIG := pxa986_lt023g_defconfig
+TARGET_KERNEL_CONFIG := pxa986_lt023g_SscSPs_defconfig
+#TARGET_KERNEL_VARIANT_CONFIG := pxa986_lt023g_SscSPs_defconfig
 TARGET_KERNEL_CROSS_COMPILE_PREFIX := arm-linux-androideabi-
 #BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 
