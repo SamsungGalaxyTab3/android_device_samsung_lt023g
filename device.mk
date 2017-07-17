@@ -75,7 +75,6 @@ PRODUCT_COPY_FILES += \
 		$(LOCAL_PATH)/configs/permissions/android.hardware.location.xml:system/etc/permissions/android.hardware.location.xml \
 		$(LOCAL_PATH)/configs/permissions/android.hardware.touchscreen.multitouch.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.xml \
     $(LOCAL_PATH)/configs/permissions/android.hardware.touchscreen.xml:system/etc/permissions/android.hardware.touchscreen.xml \
-		packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:system/etc/permissions/android.software.live_wallpaper.xml
 
 # fstab:
 PRODUCT_COPY_FILES += \
@@ -153,8 +152,7 @@ PRODUCT_PACKAGES += \
 # Charger
 PRODUCT_PACKAGES += \
     charger \
-    libold_shim \
-    charger_res_images
+    libold_shim
 
 # Live Wallpapers
 PRODUCT_PACKAGES += \

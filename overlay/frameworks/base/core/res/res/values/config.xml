@@ -24,8 +24,8 @@
     <!-- This device is not "voice capable"; it's data-only. -->
     <bool name="config_voice_capable">false</bool>
 
-    <!-- This device does not allow sms service. -->
-    <bool name="config_sms_capable">false</bool>
+    <!-- This device does allows sms service. -->
+    <bool name="config_sms_capable">true</bool>
 
     <!-- The default iface on which to monitor data use -->
     <string name="config_datause_iface">eth0</string>
