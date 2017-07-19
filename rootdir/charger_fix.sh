@@ -8,5 +8,5 @@ export PATH
 /system/xbin/busybox insmod /system/lib/modules/geu.ko
 
 /system/xbin/busybox insmod /system/lib/modules/exfat_core.ko
-  
+
 /system/xbin/busybox insmod /system/lib/modules/exfat_fs.ko
