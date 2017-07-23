@@ -1,6 +1,7 @@
 #
 # system.prop for lt023g
 #
+ro.hardware=pxa988
 
 camera2.portability.force_api=1
 
