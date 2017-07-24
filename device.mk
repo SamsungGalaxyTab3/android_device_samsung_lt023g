@@ -95,6 +95,17 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/init_bsp.rc:root/init_bsp.rc \
     $(LOCAL_PATH)/rootdir/init.wifi.rc:root/init.wifi.rc
 
+#fake init.rc's and fstab
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/fstab.pxa988:root/fstab.unknown \
+    $(LOCAL_PATH)/rootdir/init.recovery.pxa988.rc:root/init.recovery.unknown.rc \
+    $(LOCAL_PATH)/rootdir/init.pxa988.rc:root/init.unknown.rc \
+    $(LOCAL_PATH)/rootdir/init.pxa988.usb.rc:root/init.unknown.usb.rc \
+    $(LOCAL_PATH)/rootdir/init.pxa988.tel.rc:root/init.unknown.tel.rc \
+    $(LOCAL_PATH)/rootdir/ueventd.pxa988.rc:root/ueventd.unknown.rc \
+    $(LOCAL_PATH)/rootdir/init_bsp.pxa988.rc:root/init_bsp.unknown.rc \
+    $(LOCAL_PATH)/rootdir/init_bsp.pxa988.tel.rc:init_bsp.unknown.tel.rc
+
 # uevent.rc
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/ueventd.pxa988.rc:root/ueventd.pxa988.rc
