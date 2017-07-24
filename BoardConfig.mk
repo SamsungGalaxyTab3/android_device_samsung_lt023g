@@ -36,7 +36,7 @@ NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
 BOARD_USES_MRVL_HARDWARE := true
 
 # Kernel
-BOARD_KERNEL_CMDLINE := androidboot.hardware=pxa988 androidboot.selinux=permissive
+BOARD_KERNEL_CMDLINE := androidboot.hardware=pxa988 androidboot.selinux=permissive ro.hardware=pxa988
 BOARD_KERNEL_BASE := 0x10000000
 TARGET_KERNEL_ARCH := arm
 BOARD_MKBOOTIMG_ARGS := \
@@ -47,12 +47,11 @@ BOARD_KERNEL_PAGESIZE := 2048
 ## prebuilt kernel in case of no source
 #TARGET_PREBUILT_KERNEL := $(LOCAL_PATH)/prebuilt/kernel
 ## kernel source will be used if available
-KERNEL_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.6/bin
+KERNEL_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.7/bin
 TARGET_KERNEL_SOURCE := kernel/samsung/lt02
 TARGET_KERNEL_CONFIG := pxa986_lt023g_SscSPs_defconfig
 #TARGET_KERNEL_VARIANT_CONFIG := pxa986_lt023g_SscSPs_defconfig
 TARGET_KERNEL_CROSS_COMPILE_PREFIX := arm-linux-androideabi-
-#BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 
 # build old-style zip files (required for ota updater)
 BLOCK_BASED_OTA := false
