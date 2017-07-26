@@ -4,6 +4,7 @@ on init
     # RIL properties
     setprop rild.libpath /system/lib/libmarvell-ril.so
     # set CP master or slave
+    stop ril-daemon
     setprop persist.radio.pcmmaster 1
 
 on fs
@@ -30,8 +31,8 @@ on fs
 
 on post-fs-data
     # for simal
-    mkdir /data/misc/simal 0775 wifi system
-    chmod 0775 /data/misc/simal
+    mkdir /data/misc/simal 0771 wifi system
+    chmod 0771 /data/misc/simal
 
     # for Phone plugin
     mkdir /data/misc/phone 0775 media media
@@ -78,7 +79,6 @@ service nvm /system/bin/nvm
 
 service nvm-aponly /system/bin/nvm -A
     disabled
-    oneshot
     group system
 
 service diag /system/bin/diag
@@ -103,8 +103,8 @@ service vcm /system/bin/vcm
     oneshot
     group system
 
-service marvelltel /system/bin/tel_launch.sh
-    class main
+service marvelltel /system/bin/tel_launch_lt02.sh
+    class core
     oneshot
     group system
 
