@@ -257,3 +257,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libwebviewchromium_plat_support \
     libwebviewchromium_loader
+
+PRODUCT_PACKAGES += \
+		libhealthd.mrvl
