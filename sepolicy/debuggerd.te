@@ -1,0 +1,2 @@
+#============= debuggerd ==============
+allow debuggerd kernel:system module_request;

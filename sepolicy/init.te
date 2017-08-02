@@ -1,3 +1,6 @@
 allow init wpa_socket:unix_dgram_socket { bind create };
 
-
+#============= init ==============
+allow init kernel:system module_request;
+#allow init system_file:dir { setattr write };
+allow init tmpfs:lnk_file create;

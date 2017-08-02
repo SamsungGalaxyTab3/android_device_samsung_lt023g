@@ -1,0 +1,2 @@
+#============= recovery_persist ==============
+allow recovery_persist kernel:system module_request;

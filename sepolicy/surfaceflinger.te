@@ -1,2 +1,6 @@
 # secure display
 allow surfaceflinger persist_file:dir r_dir_perms;
+
+#============= surfaceflinger ==============
+allow surfaceflinger cpuctl_device:dir search;
+allow surfaceflinger kernel:system module_request;

@@ -1,0 +1,3 @@
+#============= healthd ==============
+allow healthd kernel:system module_request;
+allow healthd self:capability2 block_suspend;
