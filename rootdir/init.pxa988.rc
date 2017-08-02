@@ -25,7 +25,7 @@ on init
     setprop ro.debuggable 1
 
 	# Disable SELinux for the time being
-	setenforce 0
+  	setenforce 0
 
     write /proc/sys/vm/legacy_va_layout 1
 
