@@ -36,13 +36,13 @@ NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
 BOARD_USES_MRVL_HARDWARE := true
 
 # Kernel
-BOARD_KERNEL_CMDLINE := androidboot.hardware=pxa988 androidboot.selinux=permissive ro.hardware=pxa988
+BOARD_KERNEL_CMDLINE := androidboot.hardware=pxa988 androidboot.selinux=permissive
 BOARD_KERNEL_BASE := 0x10000000
 TARGET_KERNEL_ARCH := arm
 BOARD_MKBOOTIMG_ARGS := \
 	--ramdisk_offset 0x01000000 \
 	--pagesize 2048 \
-	--board SscSPs
+	--board MRVL
 BOARD_KERNEL_PAGESIZE := 2048
 ## prebuilt kernel in case of no source
 #TARGET_PREBUILT_KERNEL := $(LOCAL_PATH)/prebuilt/kernel
