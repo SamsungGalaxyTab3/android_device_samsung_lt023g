@@ -137,10 +137,6 @@ USE_BLUETOOTH_SAP := false
 # system.prop
 TARGET_SYSTEM_PROP := $(LOCAL_PATH)/system.prop
 
-# SELinux
-BOARD_SEPOLICY_DIRS += \
-    $(LOCAL_PATH)/sepolicy
-
 # Camera
 TARGET_PROVIDES_CAMERA_HAL := true
 USE_DEVICE_SPECIFIC_CAMERA := true

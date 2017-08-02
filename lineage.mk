@@ -15,6 +15,9 @@
 # Check for target product
 ifeq (lineage_lt023g,$(TARGET_PRODUCT))
 
+# SELinux
+BOARD_SEPOLICY_DIRS += device/samsung/lt023g/sepolicy
+
 # Inherit from those products. Most specific first.
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
