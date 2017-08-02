@@ -9,6 +9,7 @@ for dir in $dirs ; do
 	cd $dir
 	echo "Reverting $dir patches..."
 	git apply --reverse $rootdirectory/device/samsung/lt023g/patches/$dir/*.patch
+	git reset --hard
 	echo " "
 done
 

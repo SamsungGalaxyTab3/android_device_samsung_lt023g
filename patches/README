@@ -6,5 +6,6 @@ sh device/samsung/lt023g/patches/uninstall.sh
 
 Currently, patches these projects:
 1. hardware/libhardware_legacy
+2. frameworks/native
 
-More patches will come. 
+More patches will come.
