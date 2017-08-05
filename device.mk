@@ -90,16 +90,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/init.pxa988.usb.rc:root/init.pxa988.usb.rc \
     $(LOCAL_PATH)/rootdir/init.pxa988.tel.rc:root/init.pxa988.tel.rc \
     $(LOCAL_PATH)/rootdir/ueventd.pxa988.rc:root/ueventd.pxa988.rc
-
-#fake init.rc's and fstab
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/fstab.pxa988:root/fstab.unknown \
-    $(LOCAL_PATH)/rootdir/init.recovery.pxa988.rc:root/init.recovery.unknown.rc \
-    $(LOCAL_PATH)/rootdir/init.pxa988.rc:root/init.unknown.rc \
-    $(LOCAL_PATH)/rootdir/init.pxa988.usb.rc:root/init.unknown.usb.rc \
-    $(LOCAL_PATH)/rootdir/init.pxa988.tel.rc:root/init.unknown.tel.rc \
-    $(LOCAL_PATH)/rootdir/ueventd.pxa988.rc:root/ueventd.unknown.rc
-
 # uevent.rc
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/ueventd.pxa988.rc:root/ueventd.pxa988.rc
