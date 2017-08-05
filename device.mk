@@ -84,12 +84,13 @@ PRODUCT_COPY_FILES += \
 
 # init.rc's:
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/init.recovery.pxa988.rc:root/init.recovery.pxa988.rc \
+		$(LOCAL_PATH)/rootdir/charger_fix.sh:root/charger_fix.sh \
     $(LOCAL_PATH)/rootdir/init.pxa988.rc:root/init.pxa988.rc \
-    $(LOCAL_PATH)/rootdir/charger_fix.sh:root/charger_fix.sh \
-    $(LOCAL_PATH)/rootdir/init.pxa988.usb.rc:root/init.pxa988.usb.rc \
     $(LOCAL_PATH)/rootdir/init.pxa988.tel.rc:root/init.pxa988.tel.rc \
-    $(LOCAL_PATH)/rootdir/ueventd.pxa988.rc:root/ueventd.pxa988.rc
+    $(LOCAL_PATH)/rootdir/init.pxa988.usb.rc:root/init.pxa988.usb.rc \
+    $(LOCAL_PATH)/rootdir/init.recovery.pxa988.rc:root/init.recovery.pxa988.rc \
+		$(LOCAL_PATH)/rootdir/init.wifi.rc:root/init.wifi.rc
+
 # uevent.rc
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/ueventd.pxa988.rc:root/ueventd.pxa988.rc
