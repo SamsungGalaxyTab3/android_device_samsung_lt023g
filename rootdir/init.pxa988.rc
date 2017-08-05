@@ -6,6 +6,8 @@ on early-init
     mkdir /efs 0771 radio system
 
 on init
+    echo 1 > /data/bootchart
+    echo 120 > /data/bootchart/start
     mkdir /preload 0771 system system
     mkdir /NVM 0775 system system
 
