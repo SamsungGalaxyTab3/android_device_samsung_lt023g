@@ -18,6 +18,6 @@
 #define _BDROID_BUILDCFG_H
 
 #define BTM_DEF_LOCAL_NAME "Samsung Galaxy Tab 3"
-#define BTA_DISABLE_DELAY 1000 /* in milliseconds */
+#define BTA_DISABLE_DELAY 100 /* in milliseconds */
 
 #endif
