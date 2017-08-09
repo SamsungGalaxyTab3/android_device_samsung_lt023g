@@ -4,8 +4,6 @@ LOCAL_PATH := device/samsung/lt023g
 
 TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 
-USE_CAMERA_STUB := true
-
 #Target info
 ARCH_ARM_HAVE_TLS_REGISTER := true
 BOARD_HAS_NO_SELECT_BUTTON := true
@@ -45,17 +43,13 @@ NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
 BOARD_USES_MRVL_HARDWARE := true
 
 # Kernel
-BOARD_KERNEL_CMDLINE := androidboot.hardware=pxa988 androidboot.selinux=permissive
+#BOARD_KERNEL_CMDLINE := androidboot.hardware=pxa988 androidboot.selinux=permissive
 BOARD_KERNEL_BASE := 0x10000000
 TARGET_KERNEL_ARCH := arm
 BOARD_MKBOOTIMG_ARGS := \
 	--ramdisk_offset 0x01000000 \
 	--pagesize 2048 \
 	--board MRVL
-BOARD_KERNEL_PAGESIZE := 2048
-## prebuilt kernel in case of no source
-#TARGET_PREBUILT_KERNEL := $(LOCAL_PATH)/prebuilt/kernel
-## kernel source will be used if available
 KERNEL_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.7/bin
 TARGET_KERNEL_SOURCE := kernel/samsung/lt02
 TARGET_KERNEL_CONFIG := pxa986_lt023g_SscSPs_defconfig
@@ -77,6 +71,7 @@ BOARD_USES_MMCUTILS := true
 BOARD_HAS_NO_MISC_PARTITION := true
 
 # Recovery
+LZMA_RAMDISK_TARGETS := recovery
 TARGET_RECOVERY_PIXEL_FORMAT := "RGB_565"
 TARGET_RECOVERY_FSTAB := $(LOCAL_PATH)/rootdir/fstab.pxa988
 RECOVERY_FSTAB_VERSION := 2
@@ -101,6 +96,7 @@ BACKLIGHT_PATH := "/sys/class/backlight/panel/brightness"
 BOARD_CHARGING_MODE_BOOTING_LPM := /sys/class/power_supply/battery/batt_lp_charging
 BOARD_CHARGER_SHOW_PERCENTAGE := true
 CHARGING_ENABLED_PATH := "/sys/class/power_supply/battery/batt_lp_charging"
+BOARD_NO_CHARGER_LED := true
 #BOARD_CHARGER_RES := $(LOCAL_PATH)/res/charger
 
 # Audio
@@ -147,6 +143,7 @@ USE_BLUETOOTH_SAP := false
 TARGET_SYSTEM_PROP := $(LOCAL_PATH)/system.prop
 
 # Camera
+USE_CAMERA_STUB := true
 TARGET_PROVIDES_CAMERA_HAL := true
 USE_DEVICE_SPECIFIC_CAMERA := true
 TARGET_NEEDS_PLATFORM_TEXT_RELOCATIONS := true
