@@ -18,5 +18,5 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := healthd-mrvl.cpp
 LOCAL_MODULE := libhealthd.mrvl
-LOCAL_C_INCLUDES := system/core/healthd
+LOCAL_C_INCLUDES := system/core/healthd/include
 include $(BUILD_STATIC_LIBRARY)
