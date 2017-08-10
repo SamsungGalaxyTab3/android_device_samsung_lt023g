@@ -250,4 +250,4 @@ PRODUCT_PACKAGES += \
     libwebviewchromium_loader
 
 PRODUCT_PACKAGES += \
-		libhealthd.mrvl
+		libhealthd.default
