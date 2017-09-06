@@ -183,6 +183,8 @@ MRVL_LAUNCH_DMS_IN_SURFACEFLINGER := true
 
 TARGET_FORCE_CPU_UPLOAD := true
 
+# SELinux
+BOARD_SEPOLICY_DIRS += device/samsung/lt023g/sepolicy
 
 # Sec_touchscreen
 INPUT_TOUCH_DRIVER := TOUCH_LT
