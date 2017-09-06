@@ -251,3 +251,9 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_PACKAGES += \
 	libhealthd.default
+
+# Not sure why I'm including these, but here they are
+PRODUCT_PACKAGES += \
+	libkeyutils \
+	libexifa \
+	libjpega
