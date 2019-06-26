@@ -47,11 +47,13 @@ TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a9 -mfpu=neon -mfloat-abi=softfp
 
 # Kernel
 TARGET_KERNEL_SOURCE := kernel/samsung/lt02
-TARGET_KERNEL_CONFIG := blackhawk_lt02_defconfig
-BOARD_KERNEL_CMDLINE := 
+TARGET_KERNEL_CONFIG := pxa986_lt023g_SscSPs_defconfig
+BOARD_KERNEL_CMDLINE :=
 BOARD_KERNEL_BASE := 0x10000000
 BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x01000000
 BOARD_KERNEL_PAGESIZE := 2048
+TARGET_KERNEL_CROSS_COMPILE_PREFIX := arm-linux-androideabi-
+
 # TARGET_PREBUILT_KERNEL := 
 
 # Kernel Modules
@@ -155,7 +157,7 @@ SP2_BACKUP_METHOD := image
 SP2_MOUNTABLE := 0
 TW_NO_USB_STORAGE := true
 TW_INCLUDE_FUSE_EXFAT := true
-HAVE_SELINUX := true
+HAVE_SELINUX := false
 TW_NO_REBOOT_BOOTLOADER := true
 TW_HAS_DOWNLOAD_MODE := true
-
+TW_USE_TOOLBOX := true
