@@ -16,5 +16,8 @@
 # limitations under the License.
 #
 
-add_lunch_combo omni_lt023g-userdebug
-add_lunch_combo omni_lt023g-eng
+LOCAL_PATH := $(call my-dir)
+
+ifeq ($(TARGET_DEVICE),lt023g)
+include $(call all-subdir-makefiles,$(LOCAL_PATH))
+endif
