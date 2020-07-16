@@ -1,0 +1,59 @@
+#
+# system.prop for lt023g
+#
+ro.hardware=pxa988
+
+camera2.portability.force_api=1
+
+# set opengles version as 0x20000
+ro.opengles.version=131072
+
+# rotation setting in potrait mode.
+ro.sf.hwrotation=270
+
+# lcd density
+ro.sf.lcd_density=160
+
+# telephone configuration path
+ro.tel.config.path=/system/etc/tel/
+
+# adaptive backlight
+ro.cm.hardware.cabc=/sys/class/mdnie/mdnie/cabc
+
+# Wifi
+wifi.interface=wlan0
+
+# RIL
+rild.libpath=/system/lib/libsec-ril.so
+rild.libargs=-d /dev/smd0
+DEVICE_PROVISIONED=1
+persist.radio.rat_on=combine
+#ro.telephony.ril_class=KlteRIL
+telephony.lteOnGsmDevice=1
+persist.radio.apm_sim_not_pwdn=1
+persist.radio.add_power_save=1
+ro.telephony.ril.config=simactivation
+ro.ril.telephony.mqanelements=6
+
+# Media
+media.stagefright.enable-player=true
+media.stagefright.enable-http=true
+media.stagefright.enable-aac=true
+media.stagefright.enable-qcp=true
+media.stagefright.enable-fma2dp=true
+media.stagefright.enable-scan=true
+media.stagefright.legacyencoder=true
+media.stagefright.less-secure=true
+media.swhevccodectype=0
+mm.enable.smoothstreaming=true
+media.aac_51_output_enabled=true
+vidc.enc.narrow.searchrange=1
+
+# Misc.
+ro.product_ship=true
+ro.chipname=PXA986
+ro.warmboot.capability=1
+ro.qualcomm.cabl=0
+debug.sf.hw=1
+debug.egl.hw=1
+ro.sys.fw.use_trim_settings=true

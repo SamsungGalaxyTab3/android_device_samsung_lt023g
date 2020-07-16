@@ -33,7 +33,7 @@ TARGET_CPU_VARIANT := cortex-a9
 # Kernel
 TARGET_KERNEL_SOURCE := kernel/samsung/lt02
 TARGET_KERNEL_CONFIG := pxa986_lt023g_SscSPs_defconfig
-BOARD_KERNEL_CMDLINE :=
+BOARD_KERNEL_CMDLINE := androidboot.hardware=pxa988 androidboot.selinux=permissive
 BOARD_KERNEL_BASE := 0x10000000
 BOARD_KERNEL_PAGESIZE := 2048
 BOARD_KERNEL_OFFSET := 0x00008000
@@ -96,3 +96,14 @@ TW_NO_USB_STORAGE := true
 TW_EXCLUDE_ENCRYPTED_BACKUPS := true
 BOARD_HAS_NO_REAL_SDCARD := true
 TW_USE_TOOLBOX := true
+
+
+
+
+
+
+
+
+
+TARGET_SYSTEM_PROP := $(DEVICE_PATH)/system.prop
+TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery.fstab
